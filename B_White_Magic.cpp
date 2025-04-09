@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -31,8 +32,8 @@ using namespace __gnu_pbds;
 #define bits(x)                 __builtin_popcountll(x)
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
-const ll M = 1e9 + 7;
-const ll N = 1e4 + 5;
+const ll M = 998244353;
+const ll N = 3e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -42,18 +43,58 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-void solve(){
-    ll n, m; cin >> n >> m;
-    ll x = (1 << 30);
-    while(x){
-        cout << (x&n) << " " << (x&m) << endl;
-        x /= 2;
+void solve(int t){
+    ll n; cin >> n;
+    ll a[n+1];
+    multiset < ll > ms;
+    ll c = 0;
+    loop(i, 1, n){
+        cin >> a[i];
+        if(a[i] == 0) c++;
+        else ms.insert(a[i]);
     }
+    
+    if(c == 0){
+        cout << n; ed return;
+    }
+    if(a[1] == 0){
+        cout << ms.size() + 1; ed return;
+    }
+    
+    ll ans = n - c;
+    ll p = 0, val = 0;
+    set < ll > s;
+    //ms.erase(0);
+    loop2(i, n, 1){
+        if(a[i] > 0){
+            //val++;
+            ms.erase(ms.find(a[i]));
+            s.insert(a[i]);
+            while(s.count(val)) val++;
+            if(!ms.empty() && *ms.begin() < val){
+                //cout << i; ed
+                cout << ans; ed return;
+            }
+        }
+        else{
+            c--;
+            if(c == 0){
+                ms.erase(0);
+                s.insert(a[i]);
+                while(s.count(val)) val++;
+                if(!ms.empty() && *ms.begin() < val){
+                    //cout << i << "M";
+                    cout << ans; ed return;
+                }
+            }
+        }
+    }
+    cout << ans+1; ed
 }
- 
+
 int main(){
     FIO
     TC(t) 
-    solve();
+    solve(i);
     return 0;
 }

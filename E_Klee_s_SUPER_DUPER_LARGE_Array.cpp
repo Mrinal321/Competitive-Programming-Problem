@@ -42,10 +42,20 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+ll binarySearch(ll n, ll l, ll r, ll tot){
+    while(r >= l){
+        ll md = l + (r-l) / 2;
+        ll t2 = md*(md+1)/2 - n*(n-1)/2;
+        if(2*t2 >= tot) r = md;
+        else l = md;
+    }
+}
+
 void solve(){
     ll n, k; cin >> k >> n;
     ll tot = (n+k)*(n+k-1)/2 - (n-1)*n/2;
     ll l = n, r = n+k-1;
+    cout << binarySearch(n, l, r, tot);
     while(r-l > 100){
         ll md = (l+r)/2;
         ll t2 = md*(md+1)/2 - n*(n-1)/2;

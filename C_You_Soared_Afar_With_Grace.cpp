@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -32,7 +33,7 @@ using namespace __gnu_pbds;
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e4 + 5;
+const ll N = 4e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -41,16 +42,65 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     4. Hash or not.
     5. Number theory   
 */
-
+ll a[N], b[N];
+ll c[N];
 void solve(){
-    ll n, m; cin >> n >> m;
-    ll x = (1 << 30);
-    while(x){
-        cout << (x&n) << " " << (x&m) << endl;
-        x /= 2;
+    ll n; cin >> n;
+    loop(i, 1, n) cin >> a[i];
+    loop(i, 1, n){
+        cin >> b[i];
+        c[b[i]] = i;
+    }
+
+    ll cunt = 0;
+    vector < pair < ll, ll > > vp;
+    set < ll > s;
+    loop(i, 1, n){
+        if(a[i] == b[i]){
+            if(n%2 == 0){
+                cout << "-1\n"; return;
+            }
+            s.insert(a[i]);
+            
+            ll x = (n+1)/2;
+            if(x == i) continue;
+            ll y = i;
+            vp.push_back({x, y});
+            swap(a[x], a[y]);
+            swap(b[x], b[y]);
+            swap(c[b[x]], c[b[y]]);
+        }
+    }
+    if(s.size() > 1){
+        cout << "-1\n"; return;
+    }
+    loop(i, 1, n/2){
+        ll x = c[a[i]];
+        ll y = n-i+1;
+        if(y < x){
+            cout << "-1\n"; return;
+        }
+        if(y == x) continue;
+        vp.push_back({x, y});
+        swap(a[x], a[y]);
+        swap(b[x], b[y]);
+        swap(c[b[x]], c[b[y]]);
+    }
+    loop(i, 1, n){
+        ll x = c[a[i]];
+        ll y = n-i+1;
+        if(x != y){
+            //cout << "M";
+            cout << "-1\n"; return;
+        }
+    }
+
+    cout << vp.size(); ed
+    for(auto u : vp) {
+        cout << u.first << " " << u.second; ed
     }
 }
- 
+
 int main(){
     FIO
     TC(t) 

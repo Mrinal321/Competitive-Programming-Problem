@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -32,7 +33,7 @@ using namespace __gnu_pbds;
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e4 + 5;
+const ll N = 1e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -43,14 +44,46 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    ll n, m; cin >> n >> m;
-    ll x = (1 << 30);
-    while(x){
-        cout << (x&n) << " " << (x&m) << endl;
-        x /= 2;
+    ll n, k; cin >> n >> k;
+    ll a[n+1], c0 = 0;
+    loop(i, 1, n){
+        cin >> a[i];
+        if(a[i] == 0) c0++;
+    }
+    if(c0 < k){
+        cout << "0\n"; return;
+    }
+
+    ll lo = 0, hi = n;
+    while(hi-lo > 50){
+        ll mid = (lo+hi)/2;
+        ll c = 0; set < ll > s;
+        loop(i, 1, n){
+            if(a[i] <= mid) s.insert(a[i]);
+            if(s.size() > mid){
+                c++; s.clear();
+            }
+        }
+
+        if(c >= k) lo = mid;
+        else hi = mid-1;
+    }
+
+    loop2(mid, hi, lo){
+        ll c = 0; set < ll > s;
+        loop(i, 1, n){
+            if(a[i] <= mid) s.insert(a[i]);
+            if(s.size() > mid){
+                c++; s.clear();
+            }
+        }
+
+        if(c >= k){
+            cout << mid+1; ed return;
+        }
     }
 }
- 
+
 int main(){
     FIO
     TC(t) 

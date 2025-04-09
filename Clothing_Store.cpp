@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -31,8 +32,8 @@ using namespace __gnu_pbds;
 #define bits(x)                 __builtin_popcountll(x)
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
-const ll M = 1e9 + 7;
-const ll N = 1e4 + 5;
+const ll M = 998244353;
+const ll N = 3e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -43,14 +44,29 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    ll n, m; cin >> n >> m;
-    ll x = (1 << 30);
-    while(x){
-        cout << (x&n) << " " << (x&m) << endl;
-        x /= 2;
+    ll a, b, c, p, q, r; cin >> a >> b >> c >> p >> q >> r;
+    ll x = 0;
+    ll ans = 0;
+    if(c < r) ans += c;
+    else{
+        ans += r; x += (c-r);
     }
+    if(x+b < q){
+        ans += (x+b); x = 0;
+    }
+    else{
+        ans += q; x = (x+b-q);
+    }
+    if(x+a < p){
+        ans += (x+a);
+    }
+    else{
+        ans += p;
+    }
+    cout << ans;
+    ed
 }
- 
+
 int main(){
     FIO
     TC(t) 

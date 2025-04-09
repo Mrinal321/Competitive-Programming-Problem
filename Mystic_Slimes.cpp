@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -32,7 +33,7 @@ using namespace __gnu_pbds;
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e4 + 5;
+const ll N = 2e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -43,14 +44,35 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    ll n, m; cin >> n >> m;
-    ll x = (1 << 30);
-    while(x){
-        cout << (x&n) << " " << (x&m) << endl;
-        x /= 2;
+    ll n; cin >> n;
+    ll a[n+1];
+    loop(i, 1, n) cin >> a[i];
+    ll ans = 0;
+    loop(i, 1, n){
+        if(i == 1){
+            if(n > 2) ans = max(ans, a[i]);
+            else ans = max(ans, a[i]-a[i+1]);
+        }
+        else if(i == n){
+            if(n > 2) ans = max(ans, a[i]);
+            else ans = max(ans, a[i]-a[i-1]);
+        }
+        else if(i == 2){
+            ll p = a[i]-a[i-1];
+            if(n > 3) ans = max(ans, p);
+            else ans = max(ans, p-a[i+1]);
+        }
+        else if(i == n-1){
+            ll p = a[i]-a[i+1];
+            if(n > 3) ans = max(ans, p);
+            else ans = max(ans, p-a[i-1]);
+        }
+        else ans = max(ans, a[i]);
     }
+
+    cout << ans; ed
 }
- 
+
 int main(){
     FIO
     TC(t) 

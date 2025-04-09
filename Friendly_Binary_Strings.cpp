@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -31,8 +32,8 @@ using namespace __gnu_pbds;
 #define bits(x)                 __builtin_popcountll(x)
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
-const ll M = 1e9 + 7;
-const ll N = 1e4 + 5;
+const ll M = 998244353;
+const ll N = 3e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -43,14 +44,48 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    ll n, m; cin >> n >> m;
-    ll x = (1 << 30);
-    while(x){
-        cout << (x&n) << " " << (x&m) << endl;
-        x /= 2;
+    int n; cin >> n;
+    string a, b; cin >> a >> b;
+    if(n == 1){
+        py return;
+    }
+    int p1 = 0, p0 = 0, s1 = 0, s0 = 0;
+    int c = 0, d = 0;
+    loop(i, 0, n-1){
+        if(a[i] == b[i]){
+            if(a[i] == '1') {
+                p1++; c += 2;
+            }
+            else {
+                p0++; d += 2;
+            }
+        }
+        else{
+            s1++; s0++;
+            c++; d++;
+        }
+    }
+
+    if(n%2){
+        if(c%2==1 || d%2==1){
+            if(c%4 == 1 && d%4 == 1) py 
+            else pn
+        }
+        else py 
+    }
+
+    if(p1%2==1 && p0%2==1){
+        if(s1 >= 2 ) s1 -= 2;
+        else if(s0 >= 2) s0 -= 2;
+        else pn
+        if(c%2 == 0 && d%2 == 0 || n%2)
+    }
+    else{
+        if(c%2 == 0 && d%2 == 0) py 
+        else pn
     }
 }
- 
+
 int main(){
     FIO
     TC(t) 

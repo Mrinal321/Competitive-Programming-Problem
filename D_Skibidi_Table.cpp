@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -32,7 +33,7 @@ using namespace __gnu_pbds;
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e4 + 5;
+const ll N = 1e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -42,15 +43,85 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+void func(ll x, ll y){
+    ll val = (1LL << 32);
+    ll sum = 1;
+    while(val){
+        if(x > val || y > val){
+            ll p = (x-1)/val + 1, q = (y-1)/val + 1;
+            if(x >= val) x -= val; 
+            if(y >= val) y -= val;
+            //cout << val << " " << p << " " << q; ed
+            if(p == 2 && q == 2) sum += (val*val);
+            else if(p == 2 && q == 1) sum += (2*val*val);
+            else if(p == 1 && q == 2) sum += (3*val*val);
+        }
+        val /= 2;
+    }
+    cout << sum; ed
+}
+
+void func2(ll sum2){
+    ll x = 1, y = 1;
+    ll val = (1LL << 30);
+    ll sum = 1;
+    while(val){
+        if(sum + (3*val*val) <= sum2){
+            sum += (3*val*val);
+            y += val;
+        }
+        if(sum + (2*val*val) <= sum2){
+            sum += (2*val*val);
+            x += val;
+        }
+        if(sum + (val*val) <= sum2){
+            sum += (val*val);
+            x += val; y += val;
+        }
+
+        val /= 2;
+    }
+
+    cout << x << " " << y; ed
+}
+
 void solve(){
-    ll n, m; cin >> n >> m;
-    ll x = (1 << 30);
-    while(x){
-        cout << (x&n) << " " << (x&m) << endl;
-        x /= 2;
+    ll n; cin >> n;
+    ll qe; cin >> qe;
+    cin.ignore(); // to proper use for getline
+    while(qe--){
+        string str;
+        getline(cin, str);
+        if(str[0] == '-'){
+            ll x = 0, y = 0, xx = 1, yy = 1;
+            while(str.back() != ' '){
+                ll p = str.back() - '0';
+                x += (p*xx); xx *= 10;
+                str.pop_back();
+            }
+            while(str.back() == ' ') str.pop_back();
+            while(str.back() != ' '){
+                ll p = str.back() - '0';
+                y += (p*yy); yy *= 10;
+                str.pop_back();
+            }
+            //cout << x << " " << y; ed
+
+            func(y, x);
+        }
+        else{
+            ll x = 0, xx = 1;
+            while(str.back() != ' '){
+                ll p = str.back() - '0';
+                x += (p*xx); xx *= 10;
+                str.pop_back();
+            }
+
+            func2(x);
+        }
     }
 }
- 
+
 int main(){
     FIO
     TC(t) 
