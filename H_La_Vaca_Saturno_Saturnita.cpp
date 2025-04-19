@@ -32,7 +32,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define bits(x)                 __builtin_popcountll(x)
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
-const ll M = 1e10 + 7;
+const ll M = 1e9 + 7;
 const ll N = 1e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
@@ -43,72 +43,50 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+vector < ll > g[N];
+
 void solve(){
-    ll n, m; cin >> n >> m;
-
-    ll x = 1;
-    while(x <= n){
-        if((x&m)) cout << 1;
-        else cout << 0;
-        x *= 2;
-    } ed
-    x = 1;
-    while(x <= n){
-        if((x&n)) cout << 1;
-        else cout << 0;
-        x *= 2;
+    ll n, qe; cin >> n >> qe;
+    ll a[n+1];
+    //set < ll > ck;
+    loop(i, 1, n){
+        cin >> a[i];
+        g[a[i]].push_back(i);
     }
 
-    ll p = 1, ans = 0;
-    set < ll > s;
-    
-
-    while(p <= m || p <= n){
-        if((p&m)== 0 || (p&n) == 0) {
-            p *= 2;
-            continue;
-        }
-        ll x = p;
-        bool yes = 0;
-        while(x <= m || x <= n){
-            if((x&m) == 0 && (x&n) == 0) {
-                break;
+    while(qe--){
+        ll val, l, r; cin >> val >> l >> r;
+        ll ans = 0;
+        set < ll > s;
+        for(ll i = 2; i*i <= val; i++){
+            if(val%i == 0){
+                s.insert(val/i); s.insert(i);
             }
-            else if((x&m) == 0 || (x&n) == 0){
-                ans += p; s.insert(p);
-                n += p; m += p;
-                p = x; yes = 1; break;
-            }
-            x *= 2;
-        }
-
-        if(p > 1 && (((p/2)&n) ^ ((p/2)&m)) != 0){
-            //cout << p; ed
-            ll c = 1; if(((p/2)&m) != 0) c = 2;
-            ll x = p; p/=2;
-            while(x <= m && x <= n){
-                if((x&m) == 0 && (x&n) == 0) {
-                    ans += p; s.insert(p);
-                    n += p; m += p;
-                    p = x; yes = 1; break;
+        } s.insert(val);
+        while(1){
+            set < ll > ss;
+            ll inx = n+1, div = 1;
+            for(auto u : s){
+                auto uu = lower_bound(g[u].begin(), g[u].end(), l); 
+                if(uu != g[u].end() && *uu < inx){
+                    div = u; inx = *uu;
                 }
-                else if(((x&m) == 0 && c == 2) || ((x&n) == 0 && c == 1)){
-                    break;
-                }
-                x *= 2;
             }
-            
+            if(inx > r){
+                ans += ((r-l+1)*val); break;
+            }
+            ans += ((inx-l)*val);
+            while(val%div == 0) val /= div;
+            l = inx;
+            for(auto u: s){
+                if(val%u) ss.insert(u);
+            }
+            for(auto u : ss) s.erase(u);
         }
-
-        if(!yes){
-            cout << "-1\n"; return;
-        }
-
-
-        p *= 2;
+        cout << ans; ed
     }
 
-    cout << ans; ed
+    loop(i, 1, n) g[a[i]].clear();
 }
 
 int main(){

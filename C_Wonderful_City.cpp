@@ -32,8 +32,8 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define bits(x)                 __builtin_popcountll(x)
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
-const ll M = 1e10 + 7;
-const ll N = 1e5 + 5;
+const ll M = 1e9 + 7;
+const ll N = 3e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -43,72 +43,22 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+int a[1005], b[1005];
+
+ll func(vector < vector < int > > vp, int inx, int rc){
+    if()
+}
+
 void solve(){
-    ll n, m; cin >> n >> m;
-
-    ll x = 1;
-    while(x <= n){
-        if((x&m)) cout << 1;
-        else cout << 0;
-        x *= 2;
-    } ed
-    x = 1;
-    while(x <= n){
-        if((x&n)) cout << 1;
-        else cout << 0;
-        x *= 2;
+    ll n; cin >> n;
+    vector < vector < int > > vp;
+    loop(i, 1, n){
+        vector < int > v(n);
+        loop(j, 0, n-1) cin >> v[i];
+        vp.push_back(v);
     }
 
-    ll p = 1, ans = 0;
-    set < ll > s;
-    
-
-    while(p <= m || p <= n){
-        if((p&m)== 0 || (p&n) == 0) {
-            p *= 2;
-            continue;
-        }
-        ll x = p;
-        bool yes = 0;
-        while(x <= m || x <= n){
-            if((x&m) == 0 && (x&n) == 0) {
-                break;
-            }
-            else if((x&m) == 0 || (x&n) == 0){
-                ans += p; s.insert(p);
-                n += p; m += p;
-                p = x; yes = 1; break;
-            }
-            x *= 2;
-        }
-
-        if(p > 1 && (((p/2)&n) ^ ((p/2)&m)) != 0){
-            //cout << p; ed
-            ll c = 1; if(((p/2)&m) != 0) c = 2;
-            ll x = p; p/=2;
-            while(x <= m && x <= n){
-                if((x&m) == 0 && (x&n) == 0) {
-                    ans += p; s.insert(p);
-                    n += p; m += p;
-                    p = x; yes = 1; break;
-                }
-                else if(((x&m) == 0 && c == 2) || ((x&n) == 0 && c == 1)){
-                    break;
-                }
-                x *= 2;
-            }
-            
-        }
-
-        if(!yes){
-            cout << "-1\n"; return;
-        }
-
-
-        p *= 2;
-    }
-
-    cout << ans; ed
+    func(vp, -1, 0);
 }
 
 int main(){

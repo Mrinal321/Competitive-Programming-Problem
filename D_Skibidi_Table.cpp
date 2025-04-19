@@ -49,8 +49,8 @@ void func(ll x, ll y){
     while(val){
         if(x > val || y > val){
             ll p = (x-1)/val + 1, q = (y-1)/val + 1;
-            if(x >= val) x -= val; 
-            if(y >= val) y -= val;
+            if(x > val) x -= val; 
+            if(y > val) y -= val;
             //cout << val << " " << p << " " << q; ed
             if(p == 2 && q == 2) sum += (val*val);
             else if(p == 2 && q == 1) sum += (2*val*val);

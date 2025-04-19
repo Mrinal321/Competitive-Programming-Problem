@@ -32,8 +32,8 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define bits(x)                 __builtin_popcountll(x)
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
-const ll M = 1e10 + 7;
-const ll N = 1e5 + 5;
+const ll M = 1e9 + 7;
+const ll N = 2e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -44,71 +44,57 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    ll n, m; cin >> n >> m;
+    deque<ll> q0, q1;
+    ll c = 0, ans0 = 0, ans1 = 0, sum0 = 0, sum1 = 0;
+    ll qe; cin >> qe;
+    while(qe--){
+        ll op; cin >> op;
+        if(op == 3){
+            ll x; cin >> x;
+            if(c%2){
+                q1.push_back(x);
+                sum1 += x;
+                ans1 += (q1.size()*x);
+                q0.push_front(x);
+                sum0 += x;
+                ans0 += sum0;
+                cout << ans1; ed
+            }
+            else{
+                q0.push_back(x);
+                sum0 += x;
+                ans0 += (q0.size()*x);
+                q1.push_front(x);
+                sum1 += x;
+                ans1 += sum1;
+                cout << ans0; ed
+            }
 
-    ll x = 1;
-    while(x <= n){
-        if((x&m)) cout << 1;
-        else cout << 0;
-        x *= 2;
-    } ed
-    x = 1;
-    while(x <= n){
-        if((x&n)) cout << 1;
-        else cout << 0;
-        x *= 2;
+        }
+        else if(op == 2){
+            c++; 
+            if(c%2) cout << ans1; 
+            else cout << ans0; ed
+        }
+        else{
+            if(c%2){
+                ans1 = ans1 + sum1 - (q1.size()* q1.back()); 
+                q1.push_front(q1.back()); q1.pop_back();
+                ans0 = ans0 + (q0.size()* q0.front()) - sum0;
+                q0.push_back(q0.front()); q0.pop_front();
+                cout << ans1; ed
+            }
+            else{
+                ans0 = ans0 + sum0 - (q0.size()* q0.back()); 
+                q0.push_front(q0.back()); q0.pop_back();
+                ans1 = ans1 + (q1.size()* q1.front()) - sum1;
+                q1.push_back(q1.front()); q1.pop_front();
+                cout << ans0; ed
+            }
+        }
+
+        //cout << ans0 << " " << ans1; ed
     }
-
-    ll p = 1, ans = 0;
-    set < ll > s;
-    
-
-    while(p <= m || p <= n){
-        if((p&m)== 0 || (p&n) == 0) {
-            p *= 2;
-            continue;
-        }
-        ll x = p;
-        bool yes = 0;
-        while(x <= m || x <= n){
-            if((x&m) == 0 && (x&n) == 0) {
-                break;
-            }
-            else if((x&m) == 0 || (x&n) == 0){
-                ans += p; s.insert(p);
-                n += p; m += p;
-                p = x; yes = 1; break;
-            }
-            x *= 2;
-        }
-
-        if(p > 1 && (((p/2)&n) ^ ((p/2)&m)) != 0){
-            //cout << p; ed
-            ll c = 1; if(((p/2)&m) != 0) c = 2;
-            ll x = p; p/=2;
-            while(x <= m && x <= n){
-                if((x&m) == 0 && (x&n) == 0) {
-                    ans += p; s.insert(p);
-                    n += p; m += p;
-                    p = x; yes = 1; break;
-                }
-                else if(((x&m) == 0 && c == 2) || ((x&n) == 0 && c == 1)){
-                    break;
-                }
-                x *= 2;
-            }
-            
-        }
-
-        if(!yes){
-            cout << "-1\n"; return;
-        }
-
-
-        p *= 2;
-    }
-
-    cout << ans; ed
 }
 
 int main(){

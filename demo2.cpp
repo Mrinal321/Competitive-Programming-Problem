@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -32,7 +33,7 @@ using namespace __gnu_pbds;
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e4 + 5;
+const ll N = 2e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -42,18 +43,70 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-void solve(){
-    ll n, m; cin >> n >> m;
-    ll x = (1 << 30);
-    while(x){
-        cout << (x&n) << " " << (x&m) << endl;
-        x /= 2;
+#define mx 200005
+ll arr[mx];
+ll Tree[mx * 3];
+
+void init(int node, int b, int e){
+    if(b == e){
+        Tree[node] = arr[b];
+        return;
     }
+    int left = node * 2;
+    int right = node * 2 + 1;
+    int mid = (b + e) / 2;
+    init(left, b, mid);
+    init(right, mid+1, e);
+    Tree[node] = max(Tree[left] , Tree[right]);
+}
+
+ll query(int node, int b, int e, int i, int j){
+    if(i > e || j < b) return 0;
+    if(b >= i && e <= j) return Tree[node];
+
+    int left = node * 2;
+    int right = node * 2 + 1;
+    int mid = (b + e) / 2;
+    ll p1 = query(left, b, mid, i, j);
+    ll p2 = query(right, mid+1, e, i, j);
+    return max(p1 , p2);
+}
+
+void update(int node, int b, int e, int i, int newvalue){
+    if(i > e || i < b) return;
+    if(b >= i && e <= i){
+        Tree[node] = newvalue;
+        return;
+    }
+
+    int left = node * 2;
+    int right = node * 2 + 1;
+    int mid = (b + e) / 2;
+    update(left, b, mid, i, newvalue);
+    update(right, mid+1, e, i, newvalue);
+    Tree[node] = max(Tree[left] , Tree[right]);
 }
  
+void solve(){ 
+    ll n, q; cin >> n >> q;
+    loop(i, 1, n) cin >> arr[i];
+    init(1, 1, n);
+    while(q--){
+        int i, j; cin >> i >> j;
+		if(i == 1){
+			ll ans = query(1, 1, n, 1, n) - query(1, 1, n, j, j);
+			cout << ans; ed
+		}
+		else{
+			int val; cin >> val;
+			update(1, 1, n, j, val);
+		}
+    }
+}
+
 int main(){
     FIO
-    TC(t) 
+    //TC(t) 
     solve();
     return 0;
 }

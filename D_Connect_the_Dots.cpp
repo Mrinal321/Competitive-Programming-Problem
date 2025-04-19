@@ -41,78 +41,67 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     4. Hash or not.
     5. Number theory   
 */
- 
+
+class DSU {
+    private:
+        vector<int> parent, rank;
+    
+    public:
+        DSU(int n) {
+            parent.resize(n);
+            rank.resize(n, 0);
+            for(int i = 0; i < n; ++i)
+                parent[i] = i;
+        }
+    
+        int find(int x) {
+            if (parent[x] != x)
+                parent[x] = find(parent[x]); // Path Compression
+            return parent[x];
+        }
+    
+        void unite(int x, int y) {
+            int rootX = find(x);
+            int rootY = find(y);
+    
+            if (rootX == rootY)
+                return;
+    
+            // Union by Rank
+            if (rank[rootX] < rank[rootY]) {
+                parent[rootX] = rootY;
+            } else if (rank[rootY] < rank[rootX]) {
+                parent[rootY] = rootX;
+            } else {
+                parent[rootY] = rootX;
+                rank[rootX]++;
+            }
+        }
+    };
+
 void solve(){
     int n, m; cin >> n >> m;
+    DSU dsu(n+5);
     int vis[n+1] = {0};
-    map < pair < int, int >, int > map1;
+    int a[n+1][12];
+    loop(i, 1, n){
+        loop(j, 1, 10) a[i][j] = 0;
+    }
     loop(i, 1, m){
         int x, y, z; cin >> x >> y >> z;
-        int p = map1[{x,y}];
-        map1[{x,y}] = max(p,z);
+        a[x][y] = max(a[x][y], z);
     }
-    int again[n+1] = {0};
-    vector < int > v[n+1];
-    
-    set < pair < int, int > > ache;
-    int tot = 0;
-
-    for(auto u : map1){
-        int x = u.first.first, y = u.first.second, z = u.second+1;
-        int xx = u.first.first;
-        if(ache.count({x,y})) continue;
-        ache.insert({x,y});
-
-        vector < int > v3, v2;
-        //set < int > v2;
-        bool y1 = 1, y2 = 1;
-
-        while(z--){
-            if(vis[x]){
-                if(v[again[x]].empty()) y2 = 0;
-                else {
-                    v[again[x]].clear(); 
-                    v2.push_back(again[x]);
-                }
-                y1 = 0;
-            }
-            else{
-                vis[x] = 1; v3.push_back(x);
-                again[x] = xx;
-            }
-
-            if(map1.count({x,y})){
-                int p = map1[{x,y}];
-                z = max(p,z);
-            }
-            x += y;
-        }
-
-        if(y1){
-            tot++;
-            //cout << xx << ": M"; ed
-            for(auto uu : v3){
-                again[uu] = xx;
-                v[xx].push_back(uu);
-                //cout << uu << " ";
-            }
-            
-        }
-        else{
-            tot -= v2.size(); 
-            //cout << xx << " " << y << " " << v2.size() << " " << y2; ed
-            if(y2) tot++;
-            for(auto uu : v2) {
-                if(v[uu].clear())
-                v[uu].clear();
-            }
+    loop(i, 1, n){
+        loop(j, 1, 10){
+            if(a[i][j] == 0) continue;
+            dsu.unite(i, i+j);
+            a[i+j][j] = max(a[i+j][j], a[i][j]-1);
         }
     }
 
-    loop(i, 1, n) {
-        if(vis[i] == 0) tot++;
-    }
-    cout << tot; ed
+    set < int > ans;
+    loop(i, 1, n) ans.insert(dsu.find(i));
+    cout << ans.size(); ed
 }
  
 int main(){
