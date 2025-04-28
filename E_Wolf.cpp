@@ -44,27 +44,45 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    ll n, m; cin >> n >> m;
-    vector < ll > v;
-    ll a[n+1][m+1], ans = 0;
-    loop(i, 1, n){
-        ll sum = 0, tt = 0;
-        loop(j, 1, m){
-            cin >> a[i][j];
-        }
-        loop2(j, m, 1){
-            tt += ((m-j+1)*a[i][j]); sum += a[i][j];
-        }
-        ans += tt;
-        v.push_back(sum);
+    int n, qe; cin >> n >> qe;
+    int a[n+1], b[n+1];
+    loop(i, 1, n) {
+        cin >> a[i]; b[a[i]] = i;
     }
- 
-    vsort(v);
-    for(int i = 0; i < n; i++){
-        ans += (i*m*v[i]);
+    while(qe--){
+        int l, r, val; cin >> l >> r >> val;
+        int inx = b[val];
+        if(inx > r || inx < l){
+            cout << "-1 "; continue;
+        }
+        int c = 0, d = 0, t1 = 0, t2 = 0;
+        while(r >= l){
+            int mid = (l+r)/2;
+            if(mid == inx) break;
+            if(mid > inx && a[mid] < val) {
+                c++; 
+            }
+            if(mid < inx && a[mid] > val) {
+                d++;
+            }
+            if(mid > inx) r = mid-1;
+            else l = mid+1;
+            if(a[mid] < val) t1++;
+            else t2++;
+        }
+        //cout << c << " " << d << " " << t1 << " " << t2; ed
+        int x = abs(c-d);
+        if(c > d){
+            //cout << val+t2+x; ed
+            if(val+t2+x > n) cout << "-1 ";
+            else cout << c+d+x << " ";
+        }
+        else{
+            if(val-t1-x < 1) cout << "-1 ";
+            else cout << c+d+x << " ";
+        }
     }
-
-    cout << ans; ed
+    ed
 }
 
 int main(){

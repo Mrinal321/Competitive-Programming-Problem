@@ -44,27 +44,36 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    ll n, m; cin >> n >> m;
-    vector < ll > v;
-    ll a[n+1][m+1], ans = 0;
-    loop(i, 1, n){
-        ll sum = 0, tt = 0;
-        loop(j, 1, m){
-            cin >> a[i][j];
+    ll n; cin >> n;
+    string a, b; cin >> a >> b;
+    set < int > s;
+    loop(i, 0, n-1){
+        if(a[i] != b[i] && s.empty()){
+            cout << "-1\n"; return;
         }
-        loop2(j, m, 1){
-            tt += ((m-j+1)*a[i][j]); sum += a[i][j];
-        }
-        ans += tt;
-        v.push_back(sum);
-    }
- 
-    vsort(v);
-    for(int i = 0; i < n; i++){
-        ans += (i*m*v[i]);
+        if(a[i] == '1') s.insert(i);
     }
 
-    cout << ans; ed
+    vector < int > v;
+    loop2(i, n-1, 0){
+        if(a[i] != b[i]){
+            auto u = s.lower_bound(i); u--;
+            int inx = *u; //cout << inx; ed
+            loop(j, inx, i-1) {
+                v.push_back(j);
+                if(a[j+1] == '1'){
+                    s.erase(j+1); a[j+1] = '0';
+                }
+                else{
+                    s.insert(j+1); a[j+1] = '1';
+                }
+            }
+            //loop2(j, i-2, inx) v.push_back(j);
+        }
+    }
+
+    cout << v.size(); ed 
+    for(auto u : v) cout << u+1 << " "; ed
 }
 
 int main(){

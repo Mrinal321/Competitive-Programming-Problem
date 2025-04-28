@@ -45,26 +45,40 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 
 void solve(){
     ll n, m; cin >> n >> m;
-    vector < ll > v;
-    ll a[n+1][m+1], ans = 0;
-    loop(i, 1, n){
-        ll sum = 0, tt = 0;
-        loop(j, 1, m){
-            cin >> a[i][j];
-        }
-        loop2(j, m, 1){
-            tt += ((m-j+1)*a[i][j]); sum += a[i][j];
-        }
-        ans += tt;
-        v.push_back(sum);
+    ll a[n+1], b[m+1];
+    loop(i, 1, n) cin >> a[i];
+    loop(i, 1, m) cin >> b[i];
+    map < ll, ll > mp, mp2;
+    int inx = n;
+    loop2(i, m, 1){
+        while(inx > 0 && a[inx] < b[i]) inx--;
+        if(inx < 1) break;
+        mp[i] = inx; inx--;
     }
- 
-    vsort(v);
-    for(int i = 0; i < n; i++){
-        ans += (i*m*v[i]);
+    inx = 1;
+    loop(i, 1, m){
+        while(inx <= n && a[inx] < b[i]) inx++;
+        if(inx > n) break;
+        mp2[i] = inx; inx++;
+    }
+    //for(auto u : mp2) cout << u.first << " " << u.second << endl; ed
+    //for(auto u : mp) cout << u.first << " " << u.second << endl;
+    mp[m+1] = n+1; mp2[0] = 0;
+
+    if(mp.count(1)){
+        cout << "0\n"; return;
     }
 
-    cout << ans; ed
+    inx = 0; ll ans = M; a[0] = 0;
+    loop(i, 1, m){
+        if(mp.count(i+1) && mp2.count(i-1) && mp[i+1] > mp2[i-1]) {
+            ans = min(ans, b[i]);
+            //cout << inx; ed
+        }
+    }
+
+    if(ans == M) cout << "-1";
+    else cout << ans; ed
 }
 
 int main(){

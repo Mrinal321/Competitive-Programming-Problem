@@ -43,27 +43,27 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+ll a[N], p[N], n;
+
+ll func(ll m){
+    if(m <= n+1) return p[m];
+    bool nod = n & 1 ^ 1;
+    bool mod = m & 1;
+    if(nod && mod) return func((m-1)/2+1) ^ p[n/2+1] ^ p[n+1];
+    else if(nod) return p[n/2+1] ^ p[n+1];
+    else if(mod) return func((m-1)/2+1) ^ p[n+1];
+    else return p[n+1];
+}
+
 void solve(){
-    ll n, m; cin >> n >> m;
-    vector < ll > v;
-    ll a[n+1][m+1], ans = 0;
+    ll l, r; cin >> n >> l >> r;
+    p[1] = 0;
     loop(i, 1, n){
-        ll sum = 0, tt = 0;
-        loop(j, 1, m){
-            cin >> a[i][j];
-        }
-        loop2(j, m, 1){
-            tt += ((m-j+1)*a[i][j]); sum += a[i][j];
-        }
-        ans += tt;
-        v.push_back(sum);
-    }
- 
-    vsort(v);
-    for(int i = 0; i < n; i++){
-        ans += (i*m*v[i]);
+        cin >> a[i];
+        p[i+1] = a[i] ^ p[i];
     }
 
+    ll ans = func(l+1) ^ func(l);
     cout << ans; ed
 }
 

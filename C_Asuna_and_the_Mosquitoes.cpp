@@ -44,27 +44,23 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    ll n, m; cin >> n >> m;
-    vector < ll > v;
-    ll a[n+1][m+1], ans = 0;
+    ll n; cin >> n;
+    ll mx = 0, c = 0, sum = 0;
+    ll a[n+1];
     loop(i, 1, n){
-        ll sum = 0, tt = 0;
-        loop(j, 1, m){
-            cin >> a[i][j];
-        }
-        loop2(j, m, 1){
-            tt += ((m-j+1)*a[i][j]); sum += a[i][j];
-        }
-        ans += tt;
-        v.push_back(sum);
-    }
- 
-    vsort(v);
-    for(int i = 0; i < n; i++){
-        ans += (i*m*v[i]);
+        cin >> a[i];
+        if(a[i]%2) c++;
+        sum += a[i];
+        mx = max(mx, a[i]);
     }
 
-    cout << ans; ed
+    if(c == 0 || c == n){
+        cout << mx;
+    }
+    else{
+        cout << sum - c + 1;
+    }
+    ed
 }
 
 int main(){
