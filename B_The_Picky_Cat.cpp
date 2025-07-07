@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -42,11 +43,20 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-
 void solve(){
-    
+    ll n; cin >> n;
+    ll a[n+1];
+    loop(i, 1, n) cin >> a[i];
+    ll ps = 0, ng = 0;
+    loop(i, 2, n){
+        if(a[i] >= a[1] || -a[i] >= a[1]) ps++;
+        if(a[i] <= a[1] || -a[i] <= a[1]) ng++;
+    }
+
+    if(ps >= (n-1)/2 && ng >= (n-1)/2) py 
+    else pn
 }
- 
+
 int main(){
     FIO
     TC(t) 

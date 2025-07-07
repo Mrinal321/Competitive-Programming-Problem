@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -44,9 +45,39 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 
 
 void solve(){
+    int n; cin >> n;
+    int a[n+1];
+    vector < int > odd, even, ans;
+    loop(i, 1, n){
+        cin >> a[i];
+        if(i%2) odd.push_back(a[i]);
+        else even.push_back(a[i]);
+    }
+
+    ordered_set s1, s2;
+
+    ll sum1 = 0, sum2 = 0;
+    for(auto u : odd){
+        s1.insert(u);
+        int p = s1.size() - s1.order_of_key(u+1);
+        sum1 += p;
+    }
+    for(auto u : even){
+        s2.insert(u);
+        int p = s2.size() - s2.order_of_key(u+1);
+        sum2 += p;
+    }
+
+    vsort(odd); vsort(even);
+    for(int i = 0; i < n; i++){
+        if(i%2 == 0) ans.push_back(odd[i/2]);
+        else ans.push_back(even[i/2]);
+    }
     
+    if((sum1%2) != (sum2%2)) swap(ans[n-1], ans[n-3]);
+    for(auto u : ans) cout << u << " "; ed
 }
- 
+
 int main(){
     FIO
     TC(t) 

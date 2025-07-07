@@ -1,1 +1,1 @@
-{"name":"Local: demo2","url":"e:\\competetive programming\\demo2.cpp","tests":[],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\competetive programming\\demo2.cpp","group":"local","local":true}
+{"name":"Local: demo2","url":"e:\\competetive programming\\demo2.cpp","tests":[{"id":1747581075102,"input":"2\n3 10\n239 141 526\n6\n2 1\n300 100\n1000","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\competetive programming\\demo2.cpp","group":"local","local":true}

@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -32,7 +33,7 @@ using namespace __gnu_pbds;
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 2e5 + 5;
+const ll N = 1e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -42,13 +43,48 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+ll spf[N];
+vector<ll> primes;
+void sieve() {
+  for(ll i = 2; i < N; i++) {
+    if (spf[i] == 0) spf[i] = i, primes.push_back(i);
+    ll sz = primes.size();
+    for (ll j = 0; j < sz && i * primes[j] < N && primes[j] <= spf[i]; j++) {
+      spf[i * primes[j]] = primes[j];
+    }
+  }
+}
 
 void solve(){
+    int n; cin >> n;
+    int dp[n+1] = {0}, ans[n+1]; ans[1] = 1;
+    auto u = upper_bound(primes.begin(), primes.end(), n); u--;
+    while(1){
+        int i = *u;
+        vector < int > v;
+        int c = i;
+        while(c <= n){
+            if(dp[c] == 0) {
+                v.push_back(c); dp[c] = 1;
+            }
+            c += i;
+        }
+
+        int sz = v.size();
+        for(int i = 0; i < sz; i++){
+            ans[v[i]] = v[(i+1)%sz];
+        }
+
+        if(*u == 2) break;
+        u--;
+    }
     
+    loop(i, 1, n) cout << ans[i] << " "; ed
 }
- 
+
 int main(){
     FIO
+    sieve();
     TC(t) 
     solve();
     return 0;

@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -42,11 +43,43 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-
 void solve(){
+    ll n; cin >> n;
+    ll m = n*n, ptr = 1;
+    ll sum = 0, a[n+1][n+1];
     
+    loop(i, 1, n){
+        loop(j, 1, n) a[i][j] = -1;
+    }
+
+    ll x = n/2+1, y = (n+1)/2;
+    ll val = 0;
+    while(val < m){
+        a[x][y] = val; val++;
+        if(ptr == 1){
+            if(a[x][y+1] == -1) ptr = 2;
+        }
+        else if(ptr == 2){
+            if(a[x-1][y] == -1) ptr = 3;
+        }
+        else if(ptr == 3){
+            if(a[x][y-1] == -1) ptr = 4;
+        }
+        else{
+            if(a[x+1][y] == -1) ptr = 1;
+        }
+        if(ptr == 1) x++;
+        else if(ptr == 2) y++;
+        else if(ptr == 3) x--;
+        else y--;
+    }
+
+    loop(i, 1, n){
+        loop(j, 1, n) cout << a[i][j] << " "; ed
+    }
+
 }
- 
+
 int main(){
     FIO
     TC(t) 

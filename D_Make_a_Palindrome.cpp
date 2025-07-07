@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -32,7 +33,7 @@ using namespace __gnu_pbds;
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 2e5 + 5;
+const ll N = 5e4 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -42,11 +43,78 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-
 void solve(){
-    
+    int n, k; cin >> n >> k;
+    int a[n+1], b[n+1];
+    loop(i, 1, n) {
+        cin >> a[i];
+        b[i] = a[i];
+    }
+
+    if(n < 3){
+        py return;
+    }
+    bool no = 0;
+    loop(i, 1, n/2){
+        if(a[i] != a[n-i+1]){
+            no = 1; break;
+        }
+    }
+    if(!no){
+        py return;
+    }
+    sort(b+1, b+n+1);
+    map < int, int > mp;
+    int val = b[k-1];
+    loop(i, 1, k-1){
+        mp[b[i]]++;
+    }
+
+    int i = 1, j = n;
+    while(i <= j){
+        if(a[i] < val){
+            if(a[i] == a[j]){
+                mp[a[i]]--; if(i != j) mp[a[j]]--;
+                if(mp[a[i]] <= 0) mp.erase(a[i]);
+                i++; j--;
+            }
+            else j--;
+        }
+        else if(a[j] < val){
+            if(a[i] == a[j]){
+                mp[a[i]]--; if(i != j) mp[a[j]]--;
+                if(mp[a[i]] <= 0) mp.erase(a[i]);
+                i++; j--;
+            }
+            else i++;
+        }
+        else if(a[i] == val && mp.count(val)){
+            if(a[i] == a[j]){
+                mp[a[i]]--; if(i != j) mp[a[j]]--;
+                if(mp[a[i]] <= 0) mp.erase(a[i]);
+                i++; j--;
+            }
+            else j--;
+        }
+        else if(a[j] == val && mp.count(val)){
+            if(a[i] == a[j]){
+                mp[a[i]]--; if(i != j) mp[a[j]]--;
+                if(mp[a[i]] <= 0) mp.erase(a[i]);
+                i++; j--;
+            }
+            else i++;
+        }
+        else {
+            i++; j--;
+        }
+    }
+
+    //for(auto [x, y] : mp) cout << x << " " << y << endl;
+
+    if(mp.empty()) py 
+    else pn
 }
- 
+
 int main(){
     FIO
     TC(t) 

@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -42,11 +43,38 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+vector < int > g[N];
+ll power[N], parent[N], ans[N];
+
+void dfs(ll node, ll par){
+    parent[node] = par;
+    ans[node] = power[node];
+    if(parent[node] != -1 && parent[parent[node]] != -1){
+        ll p = ans[parent[parent[node]]] - power[parent[node]];
+        // if(node == 3){
+        //     cout << ans[parent[node]] << " " << ans[parent[parent[node]]]; ed
+        // }
+        if(p > 0) ans[node] += p;
+    }
+    for(auto u : g[node]){
+        if(u != par) dfs(u, node);
+    }
+}
 
 void solve(){
-    
+    ll n; cin >> n;
+    loop(i, 1, n) {
+        cin >> power[i];
+        g[i].clear();
+    }
+    loop(i, 2, n){
+        ll x, y; cin >> x >> y;
+        g[x].push_back(y); g[y].push_back(x);
+    }
+    dfs(1, -1);
+    loop(i, 1, n) cout << ans[i] << " "; ed
 }
- 
+
 int main(){
     FIO
     TC(t) 

@@ -9,6 +9,7 @@ using namespace std;
 using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
+template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 #define mxheap                  priority_queue<ll>
 #define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
 #define mxheap2                 priority_queue<pair<ll,ll>>
@@ -32,7 +33,7 @@ using namespace __gnu_pbds;
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 2e5 + 5;
+const ll N = 5e4 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -42,11 +43,52 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-
 void solve(){
-    
+    ll n; cin >> n;
+    ll a[n+1], sum = 0;
+    loop(i, 1, n){
+        cin >> a[i];
+        sum += a[i];
+    }
+    if(sum%2){
+        cout << "-1\n"; return;
+    }
+
+    ll sum2 = 0, idx = 0;
+    loop(i, 1, n){
+        if(2*a[i] > sum){
+            cout << "-1\n"; return;
+        }
+        sum2 += a[i];
+        if(2*sum2 == sum){
+            cout << "1\n";
+            loop(i, 1, n) cout << a[i] << " "; ed return;
+        }
+        if(2*sum2 > sum){
+            sum2 -= a[i];
+            idx = i; break;
+        }
+    }
+
+    cout << "2\n";
+    loop(i, 1, idx-1){
+        cout << a[i] << " "; a[i] = 0;
+    }
+
+    ll lim = sum2 - (sum/2 - a[idx]);
+    a[idx] -= lim; 
+    sum2 -= lim;
+    cout << lim << " ";
+    loop(i, idx+1, n){
+        ll x = min(sum2, a[i]);
+        a[i] -= x; sum2 -= x;
+        cout << x << " ";
+    }
+    ed 
+    loop(i, 1, n) cout << a[i] << " "; ed
+
 }
- 
+
 int main(){
     FIO
     TC(t) 
