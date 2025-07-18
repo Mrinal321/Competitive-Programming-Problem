@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e5 + 5;
+const ll N = 2e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -43,8 +43,71 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+vector < pair < int, int > > g[N];
+int root[N], a[N];
+map < int, int > mp[N];
+map < pair < int, int >, int > pr;
+ll sum;
+void dfs(int node, int rt){
+    root[node] = rt;
+    for(auto [x, y] : g[node]){
+        if(x == rt) continue;
+        mp[node][a[x]]+=y;
+        //cout << a[x] << " " << a[node]; ed
+        if(a[node] != a[x]) sum += y;
+        dfs(x, node);
+    }
+}
+
 void solve(){
+    int n, q; cin >> n >> q;
+    loop(i, 1, n) {
+        cin >> a[i];
+        g[i].clear();
+        mp[i].clear();
+    }
+    loop(i, 2, n){
+        int x, y, z; cin >> x >> y >> z;
+        pr[{x, y}] = z; pr[{y, x}] = z;
+        g[x].push_back({y, z}); g[y].push_back({x, z});
+    }
+
+    sum = 0;
+    dfs(1, 0);
     
+    while(q--){
+        int nd, val1, val2; cin >> nd >> val2;
+        if(val1 == val2){
+            cout << sum; ed continue;
+        }
+        ll pre = mp[nd][val1];
+        ll now = mp[nd][val2];
+        cout << val1 << " " << pre << " " << now; ed
+        sum += (pre - now);
+        cout << sum; ed
+        if(nd != 1){
+            int nrt = root[nd];
+            int ct = pr[{nrt, nd}];
+            if(a[nrt] == val2) {
+                sum -= ct;
+                mp[nrt][val2] += ct;
+            }
+            else {
+                sum += ct;
+                mp[nrt][val1] += ct;
+            }
+            //mp[nrt][val2] -= ct;
+            //mp[nrt][val2] += ct;
+        }
+
+        mp[nd][val1] -= pr[{}]
+        mp[nd][val2]
+        a[nd] = val2;
+
+        cout << mp[1][2] << " " << mp[2][2]; ed
+
+        cout << sum; ed
+    }
 }
 
 int main(){

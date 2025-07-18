@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e5 + 5;
+const ll N = 5e4 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -44,6 +44,70 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
+    ll n, m; cin >> n >> m;
+    ll a[n+1][m+1], b[n+1][m+1], mx = 0;;
+    loop(i, 1, n){
+        loop(j, 1, m) {
+            cin >> a[i][j]; b[i][j] = a[i][j];
+            mx = max(mx, a[i][j]);
+        }
+    }
+    vector < pair < int, int > > vp;
+    loop(i, 1, n){
+        loop(j, 1, m) {
+            if(a[i][j] == mx) {
+                vp.push_back({i, j});
+            }
+        }
+    }
+
+    if(vp.size() < 3){
+        cout << mx-1; ed return;
+    }
+
+    int sz = vp.size();
+    int x1 = -1, x2, y1, y2;
+    for(int i = 1; i < sz; i++){
+        if(vp[i].first != vp[0].first && vp[i].second != vp[0].second){
+            x1 = vp[i].first; y1 = vp[0].second;
+            x2 = vp[0].first; y2 = vp[i].second;
+        }
+    }
+
+    if(x1 == -1){
+        cout << mx-1; ed return;
+    }
+
+    // cout << x1 << " " << y1 << endl << x2 << " " << y2; ed
+    // cout << sz; ed
+
+    int c = 0;
+    loop(i, 1, n){
+        if(a[i][y1] == mx) c++;
+    }
+    loop(j, 1, m){
+        if(a[x1][j] == mx) c++;
+    }
+    if(a[x1][y1] == mx) c--;
+    
+    if(c >= sz){
+        cout << mx-1; ed return;
+    }
+
+    c = 0;
+    loop(i, 1, n){
+        if(a[i][y2] == mx) c++;
+    }
+    loop(j, 1, m){
+        if(a[x2][j] == mx) c++;
+    }
+    if(a[x2][y2] == mx) c--;
+    
+    if(c >= sz){
+        cout << mx-1; ed return;
+    }
+
+    cout << mx; ed
     
 }
 

@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e5 + 5;
+const ll N = 5e4 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -43,8 +43,36 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+ll ans(vector<ll> v, ll sum) {
+    ll n = v.size(); // in how many ways can we choose 2 elements so that their sum > sum
+    ll an = 0;
+    ll l = -1;
+    for(ll r = 1; r < n; r++) {
+        if(l == -1) {
+            if(v[r] + v[r-1] > sum) {
+                l = r-1;
+            }
+            else continue;
+        }
+ 
+        while(l > 0 && v[l-1] + v[r] > sum) l--;
+        an += r - l;
+    }
+    return an;
+}
+
 void solve(){
-    
+    ll n;
+    cin >> n;
+    vector < ll > a(n);
+    loop(i, 0, n-1) cin >> a[i];
+    sort(a.begin(),a.end());
+    ll an = 0;
+    for(int i = 2; i < n; i++) {
+        an += ans(vector<ll>(a.begin(), a.begin() + i), max(2*a[i], a.back()) - a[i]);
+    }
+ 
+    cout << an; ed
 }
 
 int main(){

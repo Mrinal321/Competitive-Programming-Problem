@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e5 + 5;
+const ll N = 5e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -44,7 +44,44 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    
+    ll n; cin >> n;
+    string a[n];
+    ll tot = 1;
+    loop(i, 0, n-1) {
+        cin >> a[i];
+        ll c = 0;
+        for(auto u : a[i]){
+            if(u == '1') c++;
+        }
+        tot = (tot * c) % M;
+    }
+
+    ll tot2 = 0;
+    //loop(inx, 1, n/2){
+        //if(n%inx) continue;
+        ll inx = n/2;
+        ll temp = 1;
+        loop(pos, 0, inx-1){
+            ll cnt = 0;
+            loop(col, 0, n-1){
+                bool no = 0;
+                for(int i = pos; i < n; i += inx){
+                    if(a[i][col] == '0'){
+                        no = 1; break;
+                    }
+                }
+                if(!no) cnt++;
+            }
+            temp = (temp * cnt) % M;
+        }
+        tot2 = (tot2 + temp) % M;
+    //}
+
+    //cout << tot << " " << tot2; ed
+
+    tot = (tot - tot2 + M) % M;
+    cout << tot; ed
+
 }
 
 int main(){

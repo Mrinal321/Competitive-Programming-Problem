@@ -44,7 +44,46 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    
+    ll n; cin >> n;
+    ll a[n+1], dp[n+1], sum = 0;
+    loop(i, 1, n) {
+        cin >> a[i]; sum += a[i];
+    }
+    sort(a+1, a+n+1); reverse(a+1, a+n+1);
+    //loop(i, 1, n) cout << a[i] << " "; ed
+    dp[0] = 0;
+    loop(i, 1, n) dp[i] = dp[i-1]+a[i];
+    loop(c, 1, 2*n){
+        ll coin = c;
+        ll tot = 0;
+        ll ans = dp[min(coin, n)];
+        ll l = 0, r = coin/2;
+        while(r-l > 5){
+            ll m1 = l + (r - l) / 3;
+            ll m2 = r - (r - l) / 3;
+
+            ll c1 = coin - 2*m1;
+            ll t1 = dp[m1] + m1*(m1-1)/2;
+            ll tot1 = t1 + m1 * (min(m1+c1, n) - m1) + (dp[min(m1+c1, n)]-dp[m1]);
+
+            ll c2 = coin - 2*m2;
+            ll t2 = dp[m2] + m2*(m2-1)/2;
+            ll tot2 = t2 + m2 * (min(m2+c2, n) - m2) + (dp[min(m2+c2, n)]-dp[m2]);
+
+            if(tot1 >= tot2) r = m2;
+            else l = m1;
+        }
+
+        loop(m1, l, r){
+            ll c1 = coin - 2*m1;
+            ll t1 = dp[m1] + m1*(m1-1)/2;
+            ll tot1 = t1 + m1 * (min(m1+c1, n) - m1) + (dp[min(m1+c1, n)]-dp[m1]);
+            ans = max(ans, tot1);
+        }
+
+        cout << ans << " ";
+    }
+    ed
 }
 
 int main(){

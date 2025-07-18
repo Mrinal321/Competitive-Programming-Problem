@@ -18,8 +18,8 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define FIO                     ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(NULL);
 #define TC(t)                   int t; cin >> t; for(int i = 1; i <= t; i++)
 #define ini(x, y)               memset(x, y, sizeof(x))
-#define loop(i, a, b)           for(ll i = a; i <= b; i++)
-#define loop2(i, b, a)          for(ll i = b; i >= a; i--)
+#define loop(i, a, b)           for(int i = a; i <= b; i++)
+#define loop2(i, b, a)          for(int i = b; i >= a; i--)
 #define pn                      cout << "NO\n";
 #define py                      cout << "YES\n";
 #define ed                      cout << "\n";
@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e5 + 5;
+const ll N = 5e4 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -44,7 +44,40 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    
+    int n; cin >> n;
+    int a[n+1];
+    loop(i, 1, n) cin >> a[i];
+    int ans = n+1;
+    loop(i, 1, n){
+        bool br = 0, sm = 0;
+        int inx = n;
+        loop(j, i+1, n){
+            if(abs(a[i]-a[j]) <= 1) ans = min(j-i-1, ans);
+            if(a[j] <= a[i]+1) {
+                sm = 1; inx = min(inx, j);
+            }
+            if(a[j] >= a[i]+1) {
+                br = 1; inx = min(inx, j);
+            }
+        }
+
+        if(br && sm) ans = min(inx-i, ans);
+        br = 0; sm = 0;
+        inx = 0;
+        loop2(j, i-1, 1){
+            if(abs(a[i]-a[j]) <= 1) ans = min(i-j-1, ans);
+            if(a[j] <= a[i]+1) {
+                sm = 1; inx = max(inx, j);
+            }
+            if(a[j] >= a[i]+1) {
+                br = 1; inx = max(inx, j);
+            }
+        }
+        if(br && sm) ans = min(i-inx, ans);
+        
+    }
+    if(ans <= n) cout << ans; 
+    else cout << "-1"; ed
 }
 
 int main(){

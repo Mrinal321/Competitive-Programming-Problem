@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e5 + 5;
+const ll N = 2e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -43,8 +43,66 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+set < int > g[N];
+
 void solve(){
-    
+    int n; cin >> n;
+    loop(i, 1, n) g[i].clear();
+    loop(i, 2, n){
+        int x, y; cin >> x >> y;
+        g[x].insert(y); g[y].insert(x);
+    }
+    loop(i, 1, n){
+        if(g[i].size() == 0){
+            pn return;
+        }
+    }
+    if(n == 2){
+        pn return;
+    }
+    int inx = 1;
+    vector < pair < int, int > > ans;
+    set < int > in, out; 
+    loop(i, 1, n){
+        if(g[i].size() == 2) {
+            inx = i;
+            int v = *g[inx].begin();
+            ans.push_back({v, inx});
+            g[inx].erase(v); g[v].erase(inx);
+            int v2 = *g[inx].begin();
+            ans.push_back({inx, v2});
+            g[v2].erase(inx); g[inx].erase(v2);
+            in.insert(v2); out.insert(v);
+            break;
+        }
+    }
+
+    if(ans.empty()){
+        pn return;
+    }
+ 
+    while(!out.empty() || !in.empty()){
+        if(!out.empty()){
+            int x = *out.begin();
+            for(auto u : g[x]){
+                g[u].erase(x); in.insert(u);
+                ans.push_back({x, u});
+            }
+            out.erase(x); g[x].clear();
+        }
+        if(!in.empty()){
+            int x = *in.begin();
+            for(auto u : g[x]){
+                g[u].erase(x); out.insert(u);
+                ans.push_back({u, x});
+            }
+            in.erase(x); g[x].clear();
+        }
+    }
+    py 
+    for(auto [x, y] : ans){
+        cout << x << " " << y; ed
+    }
 }
 
 int main(){

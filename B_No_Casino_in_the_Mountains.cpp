@@ -44,7 +44,25 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    
+    ll n, k; cin >> n >> k;
+    ll a[n+1];
+    loop(i, 1, n) cin >> a[i];
+    ll x = 0, ans = 0;
+    loop(i, 1, n){
+        if(a[i] == 1){
+            if(x >= k){
+                ans++; x -= k;
+                ans += (x/(k+1));
+            }
+            x = 0; continue;
+        }
+        x++;
+    }
+    if(x >= k){
+        ans++; x -= k;
+        ans += (x/(k+1));
+    }
+    cout << ans; ed
 }
 
 int main(){

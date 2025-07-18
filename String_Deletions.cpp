@@ -44,7 +44,30 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    
+    ll n, m; cin >> n;
+    string a; cin >> a;
+    // loop(i, 1, n-2){
+    //     if(a[i] != a[0] && a[i] != a[n-1]){
+    //         cout << "2\n"; return;
+    //     }
+    // }
+
+    ll c = 0;
+    loop(i, 1, n-1){
+        if(a[i] != a[i-1]){
+            c += i; break;
+        }
+    }
+    if(c == 0){
+        cout << n; ed return;
+    }
+    loop2(i, n-1, 1){
+        if(a[i] != a[i-1]){
+            c += (n-i); break;
+        }
+    }
+    if(a[0] != a[n-1]) c++;
+    cout << min(c, n); ed
 }
 
 int main(){

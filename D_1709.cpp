@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e5 + 5;
+const ll N = 5e4 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -44,7 +44,45 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
+    ll n; cin >> n;
+    ll a[n+1], b[n+1];
+    loop(i, 1, n) cin >> a[i];
+    loop(i, 1, n) cin >> b[i];
+
+    vector < pair < int, int > > vp;
+    loop(j, 1, n){
+        loop(i, 1, n-1){
+            if(a[i] > a[i+1]){
+                vp.push_back({1, i});
+                swap(a[i], a[i+1]);
+            }
+        }
+    }
+    //cout << vp.size(); ed
+    loop(j, 1, n){
+        loop(i, 1, n-1){
+            if(b[i] > b[i+1]){
+                vp.push_back({2, i});
+                swap(b[i], b[i+1]);
+            }
+        }
+    }
     
+    loop2(i, n, 1){
+        if(a[i] > b[i]){
+            vp.push_back({3, i}); 
+            swap(a[i], b[i]);
+        }
+        if(i > 1 && b[i] < b[i-1]){
+            vp.push_back({2, i});
+            swap(b[i], b[i+1]);
+        }
+    }
+
+    cout << vp.size(); ed 
+    for(auto [x, y] : vp){
+        cout << x << " " << y; ed
+    }
 }
 
 int main(){

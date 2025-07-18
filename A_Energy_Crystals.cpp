@@ -44,7 +44,20 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    
+    ll n; cin >> n;
+    if(n == 1){
+        cout << "3\n"; return;
+    }
+    ll a[3] = {0};
+    ll x = 0; a[1] = 1; a[2] = 1;
+    while(a[0] < n){
+        sort(a, a+3);
+        a[0] = 2*a[1];
+        sort(a, a+3);
+        x++;
+    }
+
+    cout << x; ed
 }
 
 int main(){

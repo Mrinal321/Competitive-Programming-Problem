@@ -44,7 +44,21 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    
+    ll n, k; cin >> n >> k;
+    vector < pair < ll, pair < ll, ll > > > vp;
+    loop(i, 0, n-1){
+        ll x, y, z; cin >> x >> y >> z;
+        vp.push_back({x, {y, z}});
+    }
+    sort(vp.begin(), vp.end());
+    set < ll > s; s.insert(k);
+    for(auto u : vp){
+        ll x = u.first, y = u.second.first, z = u.second.second;
+        auto uu = s.lower_bound(x);
+        if(uu != s.end() && *uu <= y) s.insert(z);
+    }
+
+    cout << *s.rbegin(); ed
 }
 
 int main(){

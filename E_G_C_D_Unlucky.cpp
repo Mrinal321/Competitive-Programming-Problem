@@ -44,7 +44,28 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
+    ll n; cin >> n;
+    ll p[n+1], q[n+1], a[n+1];
+    loop(i, 1, n) cin >> p[i];
+    loop(i, 1, n) cin >> q[i];
+    loop(i, 1, n) a[i] = p[i]*q[i] / __gcd(p[i], q[i]);
     
+    //loop(i, 1, n) cout << a[i] << " "; ed
+    ll x = a[1];
+    loop(i, 1, n){
+        x = __gcd(a[i], x);
+        if(x != p[i]){
+            pn return;
+        }
+    }
+    x = a[n];
+    loop2(i, n, 1){
+        x = __gcd(a[i], x);
+        if(x != q[i]){
+            pn return;
+        }
+    }
+    py
 }
 
 int main(){

@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e5 + 5;
+const ll N = 5e4 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -44,7 +44,29 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    
+    ll n, sum2, mx; cin >> n >> sum2 >> mx;
+    ll a[n+1];
+    loop(i, 1, n) cin >> a[i];
+    map < ll, ll > mp;
+    map < pair < ll, ll >, ll > mpp;
+    ll sum = 0, cmx = 0, ans = 0;
+    loop(i, 1, n){
+        if(a[i] > mx){
+            mp.clear(); mpp.clear();
+            sum = 0; cmx = 0; continue;
+        }
+        if(mx == a[i]) cmx++;
+        sum += a[i];
+        mp[sum]++;
+        ll need = sum - sum2; 
+        if(cmx > 0) {
+            if(sum2 == 0 && sum != 0) ans--;
+            ans += (mp[need] - mpp[{cmx, need}]);
+            if(need == 0 && sum2 != need) ans++;
+        }
+        mpp[{cmx, sum}]++;
+    }
+    cout << ans; ed
 }
 
 int main(){

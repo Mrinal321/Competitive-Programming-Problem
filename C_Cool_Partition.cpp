@@ -44,7 +44,25 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
+    ll n; cin >> n;
+    ll a[n+1];
+    set < ll > s1, s2;
+    loop(i, 1, n) cin >> a[i];
     
+    s1.insert(a[1]);
+    ll c = 1;
+    loop(i, 2, n){
+        if(s1.count(a[i])) s1.erase(a[i]);
+        s2.insert(a[i]);
+
+        if(s1.empty()){
+            c++; 
+            for(auto u : s2) s1.insert(u);
+            s2.clear();
+        }
+    }
+
+    cout << c; ed
 }
 
 int main(){

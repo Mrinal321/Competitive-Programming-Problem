@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e5 + 5;
+const ll N = 5e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -43,8 +43,58 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+ll big[5205], small[5205], dp[5205], temp[5205];
+
 void solve(){
-    
+    ll n; cin >> n;
+    string a[n];
+    ll tot = 1;
+    loop(i, 0, n-1) {
+        cin >> a[i];
+    }
+
+    ll ans = 0;
+    loop(row, 0, n/2){
+        memset(big, 0, sizeof(big));
+        memset(small, 0, sizeof(small));
+        big[0] = 1; small[0] = 1;
+        
+        loop(i, row, row+n/2-1){
+            memset(temp, 0, sizeof(temp));
+            loop(j, 0, n-1){
+                if(a[i%n][j] == '0') continue;
+                ll val = j+1;
+                loop2(inx, 5000, val){
+                    if(big[inx-val]) {
+                        temp[inx] = (temp[inx] + big[inx-val])%M;
+                    }
+                }
+            }
+            loop(inx, 0, 5000) big[inx] = temp[inx];
+        }
+        
+        loop(i, row+n/2, row+n-1){
+            memset(temp, 0, sizeof(temp));
+            loop(j, 0, n-1){
+                if(a[i%n][j] == '0') continue;
+                ll val = j+1;
+                loop2(inx, 5000, val){
+                    if(small[inx-val]) {
+                        temp[inx] = (temp[inx] + small[inx-val])%M;
+                    }
+                }
+            }
+            loop(inx, 0, 5000) small[inx] = temp[inx];
+        }
+
+        dp[0] = 0;
+        loop(l, 1, 5000) dp[l] = (dp[l-1]+small[l]) % M;
+        loop(inx, 1, 5000){
+            ans = (ans + dp[inx-1]*big[inx]) % M;
+        }
+    }
+
+    cout << ans; ed
 }
 
 int main(){

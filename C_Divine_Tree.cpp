@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e5 + 5;
+const ll N = 5e4 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -44,7 +44,34 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    
+    ll n, m; cin >> n >> m;
+    if(m < n || n*(n+1)/2 < m){
+        cout << "-1\n"; return;
+    }
+
+    set < ll > s;
+    loop(i, 1, n) s.insert(i);
+    vector < pair < ll, ll > > ans;
+    vector < ll > v;
+    while(!s.empty()){
+        if(s.size() == m){
+            for(auto u : s) v.push_back(u); break;
+        }
+        ll sz = s.size()-1;
+        for(auto u = s.rbegin(); u != s.rend(); u++){
+            ll x = *u;
+            if(m-x >= sz){
+                v.push_back(x); m -= x; s.erase(x); break;
+            }
+        }
+    }
+
+    //for(auto u : v) cout << u << " "; ed
+
+    cout << v[0] << "\n";
+    for(int i = 1; i < v.size(); i++){
+        cout << v[i-1] << " " << v[i]; ed
+    }
 }
 
 int main(){

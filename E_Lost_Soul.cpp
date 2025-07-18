@@ -43,13 +43,36 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-void solve(){
-    
+void solve(int t){
+    ll n; cin >> n;
+    ll a[n+1], b[n+1];
+    loop(i, 1, n) cin >> a[i];
+    loop(i, 1, n) cin >> b[i];
+    // if(t == 48){
+    //     loop(i, 1, n) cout << a[i];
+    //     loop(i, 1, n) cout << b[i];
+    //     ed return;
+    // }
+    ll dp[n+1];
+    memset(dp, 0, sizeof(dp));
+    loop2(i, n, 1){
+        if(a[i] == b[i]){
+            cout << i; ed return;
+        }
+        if(dp[a[i]] >= 2 || dp[b[i]] >= 2){
+            cout << i; ed return;
+        }
+        if((dp[a[i]] >= 1 && b[i+1] != a[i]) || (dp[b[i]] >= 1 && a[i+1] != b[i])){
+            cout << i; ed return;
+        }
+        dp[a[i]]++; dp[b[i]]++;
+    }
+    cout << 0; ed
 }
 
 int main(){
     FIO
     TC(t) 
-    solve();
+    solve(i);
     return 0;
 }

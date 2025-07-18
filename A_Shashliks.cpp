@@ -32,7 +32,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define bits(x)                 __builtin_popcountll(x)
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
-const ll M = 1e9 + 7;
+const ll M = 1e9;
 const ll N = 1e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
@@ -43,13 +43,72 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+vector<int> graph[N], g[N], g2[N];
+bool visited[N];
+bool in_stack[N];
+bool vis[N] = {0};
+set<pair<int, int>> seen; // to ignore duplicate edges
+
+bool dfs(int node) {
+    visited[node] = true;
+    in_stack[node] = true;
+
+    for (int neighbor : graph[node]) {
+        if (!visited[neighbor] && vis[neighbor]) {
+            if (dfs(neighbor)) return true;
+        } else if (in_stack[neighbor]) {
+            return true; // cycle found in the current path
+        }
+    }
+
+    in_stack[node] = false;
+    return false;
+}
+
+void dfs2(int node){
+    vis[node] = 1;
+    for(auto u : g2[node]){
+        if(!vis[u]) dfs2(u);
+    }
+}
+
+int dp[N];
+int func(int node){
+    if(!vis[node]) return 0;
+    if(dp[node] != -1) return dp[node];
+    int ans = 0;
+    for(auto x : g[node]){
+        ans = (ans+func(x)) % M;
+    }
+    return dp[node] = ans;
+}
+
 void solve(){
+    int n, m; cin >> n >> m;
+    // Clean up
+    memset(visited, 0, sizeof(visited));
+    memset(in_stack, 0, sizeof(in_stack));
+
+    for (int i = 0; i < m; ++i) {
+        int u, v; cin >> u >> v;
+        g[u].push_back(v);
+        g2[v].push_back(u);
+        graph[u].push_back(v);
+    }
+    dfs2(n);
     
+    if (dfs(1)){
+        cout << "INFINITE PATHS\n"; return;
+    }
+    loop(i, 1, n-1) dp[i] = -1;
+    dp[n] = 1;
+    cout << func(1); ed
+    //loop(i, 1, n) cout << dp[i] << " "; ed
 }
 
 int main(){
     FIO
-    TC(t) 
+    //TC(t) 
     solve();
     return 0;
 }

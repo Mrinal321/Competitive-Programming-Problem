@@ -44,7 +44,12 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    
+    ll n; cin >> n;
+    set < ll > s;
+    while(n){
+        s.insert(n%10); n/=10;
+    }
+    cout << *s.begin(); ed
 }
 
 int main(){

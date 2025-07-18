@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e5 + 5;
+const ll N = 2e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -43,8 +43,80 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
+vector < int > g[N];
+bool vis[N];
+int rt, cnt;
+
+void dfs(int node){
+    vis[node] = 1; cnt++;
+    if(g[node].size() > 2 || (g[node].size() == 2 && node == 1)){
+        rt = node; return;
+    }
+    for(auto u : g[node]){
+        if(!vis[u]) dfs(u);
+    }
+}
+
+int dfs2(int node){
+    vis[node] = 1;
+    int t = 1;
+    for(auto u : g[node]){
+        if(!vis[u]) t += dfs2(u);
+    }
+    return t;
+}
+
 void solve(){
-    
+    int n; cin >> n;
+    loop(i, 1, n){
+        g[i].clear(); vis[i] = 0;
+    }
+    loop(i, 2, n){
+        int x, y; cin >> x >> y;
+        g[x].push_back(y);
+        g[y].push_back(x);
+    }
+
+    int c = 0;
+    loop(i, 2, n){
+        if(g[i].size() == 1) c++;
+    }
+    if(c > 2){
+        cout << "0\n"; return;
+    }
+    if(c == 1){
+        ll x = POW(2, n);
+        cout << x; ed return;
+    }
+
+    cnt = 0;
+    dfs(1);
+    vector < int > v;
+    for(int node : g[rt]){
+        if(vis[node]) continue;
+        v.push_back(node);
+    }
+    if(g[v[0]].size() == 1 && g[v[1]].size() == 1){
+        ll x = POW(2, n-1);
+        cout << x; ed return;
+    }
+    else if(g[v[0]].size() == 1 || g[v[1]].size() == 1){
+        ll x = (POW(2, n-2) + POW(2, n-3)) % M;
+        cout << x; ed return;
+    }
+    else{
+        ll p = dfs2(v[0]);
+        ll q = dfs2(v[1]);
+        ll r = abs(p-q);
+        if(r == 0){
+            ll x = POW(2, cnt+1);
+            cout << x; ed return;
+        }
+        else{
+            ll x = (POW(2, cnt+r-1) + POW(2, cnt+r)) % M;
+            cout << x; ed return;
+        }
+    }
 }
 
 int main(){

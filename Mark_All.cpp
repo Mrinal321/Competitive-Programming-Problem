@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e5 + 5;
+const ll N = 5e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -44,7 +44,17 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    
+    int n; cin >> n;
+    int a[n+1];
+    loop(i, 1, n) cin >> a[i];
+    int ans = min(a[1], a[n]);
+    if(n < 3){
+        cout << ans; ed return;
+    }
+    sort(a+2, a+n);
+    ans = min(ans, a[2]+a[3]);
+    //loop(i, 2, n-2) ans = min(ans, a[i]+a[i+1]);
+    cout << ans; ed
 }
 
 int main(){

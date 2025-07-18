@@ -44,7 +44,18 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(){
-    
+    ll n, inx; cin >> n >> inx;
+    ll a[n+1];
+    loop(i, 1, n) cin >> a[i];
+    ll x = a[inx];
+    sort(a+1, a+n+1);
+    loop(i, 2, n){
+        if(a[i] <= x) continue;
+        if(a[i]-a[i-1] > x){
+            pn return;
+        }
+    }
+    py
 }
 
 int main(){
