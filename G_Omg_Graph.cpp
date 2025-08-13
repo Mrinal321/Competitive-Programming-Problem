@@ -15,14 +15,14 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define loop(i, a, b)           for(int i = a; i <= b; i++)
 #define loop2(i, b, a)          for(int i = b; i >= a; i--)
 #define pn                      cout << "NO\n";
-#define py                      cout << "YES\n";
+//#define py                      cout << "YES\n";
 #define ed                      cout << "\n";
 #define vrev(v)                 reverse(v.begin(),v.end());
 #define vsort(v)                sort(v.begin(),v.end());
 #define bits(x)                 __builtin_popcountll(x)
 //Constants
-const ll M = 1e9 + 7;
-const ll N = 1e3 + 5;
+const ll M = 1e10 + 7;
+const ll N = 2e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -32,44 +32,59 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-vector < int > g[N];
-bool vis[N], dp[N];
+//code of Luv
+ll parent[N], sz[N], mn[N], mx[N];
 
-void dfs(int node){
-    vis[node] = 1;
-    for(int u : g[node]){
-        if(!vis[u]) dfs(u);
-    }
+void make(int v){
+  parent[v] = v;
+  sz[v] = 1;
+  mn[v] = M; mx[v] = 0;
 }
 
+ll find(int v){
+  if(v == parent[v]) return v;
+  return find(parent[v]);
+}
+
+void Union(int a, int b, ll maxi, ll mini){
+  a = find(a);
+  b = find(b);
+  if(a != b){
+    if (sz[a] < sz[b])
+        swap(a, b);
+    parent[b] = a;
+    sz[a] += sz[b];
+    mx[a] = maxi; mn[a] = mini;
+  }
+}
+
+
 void solve(){
-    int n, m, st, ds; cin >> n >> m >> st >> ds;
-    loop(i, 1, n) {
-        g[i].clear();
-        vis[i] = 0; dp[i] = 0;
-    }
+    int n, m; cin >> n >> m;
+    loop(i, 1, n) make(i);
+    vector < pair < int, pair < int, int > > > vp;
     loop(i, 1, m){
-        int x, y; cin >> x >> y;
-        g[x].push_back(y); g[y].push_back(x);
+        int x, y, w; cin >> x >> y >> w;
+        vp.push_back({w, {x, y}});
     }
 
-    vector < int > ans; ans.push_back(st);
-    dp[st] = 1;
-    while(st != ds){
-        loop(i, 1, n){
-            if(dp[i] == 0) vis[i] = 0;
-            else vis[i] = 1;
+    vsort(vp);
+    ll ans = M;
+    for(auto& e : vp){
+        ll w = e.first;
+        int x = e.second.first;
+        int y = e.second.second;
+        ll px = find(x), py = find(y);
+        ll maxi = max({w, mx[px], mx[py]});
+        ll mini = min({w, mn[px], mn[py]});
+        Union(x, y, maxi, mini);
+        if(find(1) == find(n)){
+            ll parent1 = find(1);
+            ans = min(ans, mn[parent1]+mx[parent1]);
         }
-
-        dfs(ds);
-        int mn = N;
-        for(int nd : g[st]){
-            if(vis[nd] && !dp[nd]) mn = min(mn, nd);
-        }
-        ans.push_back(mn); st = mn; dp[st] = 1;
     }
 
-    for(auto u : ans) cout << u << " "; ed
+    cout << ans; ed
 }
 
 int main(){

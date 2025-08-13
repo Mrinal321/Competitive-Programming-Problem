@@ -22,7 +22,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define bits(x)                 __builtin_popcountll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e3 + 5;
+const ll N = 2e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -33,43 +33,41 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 vector < int > g[N];
-bool vis[N], dp[N];
+bool vis[N];
+int single, ans;
 
 void dfs(int node){
+    int c = 0;
     vis[node] = 1;
-    for(int u : g[node]){
-        if(!vis[u]) dfs(u);
+    if(g[node].size() == 1) c++;
+    for(int nd : g[node]){
+        if(g[nd].size() == 1) c++;
+        if(!vis[nd]) dfs(nd);
     }
+    ans = min(ans, single-c);
 }
 
 void solve(){
-    int n, m, st, ds; cin >> n >> m >> st >> ds;
-    loop(i, 1, n) {
-        g[i].clear();
-        vis[i] = 0; dp[i] = 0;
+    ll n; cin >> n;
+    loop(i, 1, n){
+        vis[i] = 0; g[i].clear();
     }
-    loop(i, 1, m){
+    loop(i, 1, n-1){
         int x, y; cin >> x >> y;
-        g[x].push_back(y); g[y].push_back(x);
+        g[x].push_back(y);
+        g[y].push_back(x);
+    }
+    if(n <= 3){
+        cout << "0\n"; return;
     }
 
-    vector < int > ans; ans.push_back(st);
-    dp[st] = 1;
-    while(st != ds){
-        loop(i, 1, n){
-            if(dp[i] == 0) vis[i] = 0;
-            else vis[i] = 1;
-        }
-
-        dfs(ds);
-        int mn = N;
-        for(int nd : g[st]){
-            if(vis[nd] && !dp[nd]) mn = min(mn, nd);
-        }
-        ans.push_back(mn); st = mn; dp[st] = 1;
+    single = 0; ans = n;
+    loop(i, 1, n){
+        if(g[i].size() == 1) single++;
     }
 
-    for(auto u : ans) cout << u << " "; ed
+    dfs(1);
+    cout << ans; ed
 }
 
 int main(){

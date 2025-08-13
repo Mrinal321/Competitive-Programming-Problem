@@ -18,7 +18,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define FIO                     ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(NULL);
 #define TC(t)                   int t; cin >> t; for(int i = 1; i <= t; i++)
 #define ini(x, y)               memset(x, y, sizeof(x))
-#define loop(i, a, b)           for(int i = a; i <= b; i++)
+#define loop(i, a, b)           for(ll i = a; i <= b; i++)
 #define loop2(i, b, a)          for(ll i = b; i >= a; i--)
 #define pn                      cout << "NO\n";
 #define py                      cout << "YES\n";
@@ -33,7 +33,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 5e4 + 5;
+const ll N = 1e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -43,55 +43,73 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-void solve(int t){
-    int n, m, k; cin >> n >> m >> k;
-    string a[n];
-    loop(i, 0, n-1) cin >> a[i];
-    ll gold = 0;
-    // if(t == 55){
-    //     cout << a; ed return;
-    // }
-
-    loop(i, 0, n-1){
-        loop(j, 0, m-1){
-            if(a[i][j] == 'g') gold++;
-        }
+void solve(){
+    int n, q; cin >> n >> q;
+    string a; cin >> a;
+    string nw;
+    map < pair < char, char >, int > m1, m2;
+    vector < pair < char, char > > vp(q);
+    map < pair < char, char >, set < int > >  st;
+    loop(i, 0, q-1) {
+        cin >> vp[i].first >> vp[i].second;
+        m1[{vp[i].first, vp[i].second}]++;
+        st[{vp[i].first, vp[i].second}].insert(i);
     }
 
-    int dp[n+5][m+5];
     loop(i, 0, n-1){
-        if(a[i][0] == 'g') dp[i][0] = 1;
-        else dp[i][0] = 0;
-        loop(j, 1, m-1){
-            dp[i][j] = dp[i][j-1];
-            if(a[i][j] == 'g') dp[i][j]++;
-        }
-    }
-
-    int mn = gold;
-    loop(i, 0, n-1){
-        loop(j, 0, m-1){
-            if(a[i][j] != '.') continue;
-            int tot = 0;
-            int st = 0; st = max(st, i-k+1);
-            int en = n-1; en = min(en, i+k-1);
-            int l = 0; l = max(l, j-k+1);
-            int r = m-1; r = min(r, j+k-1);
-            //cout << st << " " << en << " " << l << " " << r; ed
-            loop(k, st, en) tot += dp[k][r];
-            if(l > 0){
-                loop(k, st, en) tot -= dp[k][l-1];
+        if(a[i] == 'a') cout << 'a';
+        else if(a[i] == 'b'){
+            if(!st[{'b', 'a'}].empty()){
+                cout << "a"; 
+                st[{'b', 'a'}].erase(st[{'b', 'a'}].begin());
             }
-            mn = min(mn, tot);
+            else{
+                if(st[{'b', 'c'}].empty()){
+                    cout << "b"; 
+                    continue;
+                }
+                int inx = *st[{'b', 'c'}].begin();
+                auto u = st[{'c', 'a'}].lower_bound(inx);
+                if(u == st[{'c', 'a'}].end()) cout << "b";
+                else{
+                    cout << "a"; 
+                    st[{'b', 'c'}].erase(st[{'b', 'c'}].begin());
+                    st[{'c', 'a'}].erase(u);
+                }
+            }
+        }
+        else{
+            if(!st[{'c', 'a'}].empty()){
+                cout << "a"; 
+                st[{'c', 'a'}].erase(st[{'c', 'a'}].begin());
+            }
+            else{
+                if(st[{'c', 'b'}].empty()){
+                    cout << "c"; 
+                    continue;
+                }
+                int inx = *st[{'c', 'b'}].begin();
+                auto u = st[{'b', 'a'}].lower_bound(inx);
+                if(u == st[{'b', 'a'}].end()) {
+                    cout << "b";
+                    st[{'c', 'b'}].erase(st[{'c', 'b'}].begin());
+                    
+                }
+                else{
+                    cout << "a"; 
+                    st[{'c', 'b'}].erase(st[{'c', 'b'}].begin());
+                    st[{'b', 'a'}].erase(u);
+                }
+            }
         }
     }
-
-    cout << gold - mn; ed
+    
+    ed
 }
 
 int main(){
     FIO
     TC(t) 
-    solve(i);
+    solve();
     return 0;
 }

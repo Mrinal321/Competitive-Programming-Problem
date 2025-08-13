@@ -22,7 +22,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define bits(x)                 __builtin_popcountll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e3 + 5;
+const ll N = 3e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -32,44 +32,46 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-vector < int > g[N];
-bool vis[N], dp[N];
+ll a[N], n, k;
 
-void dfs(int node){
-    vis[node] = 1;
-    for(int u : g[node]){
-        if(!vis[u]) dfs(u);
+pair < bool, pair < ll, ll > > func(ll md){
+    map < ll, ll > m; m[0] = 0;
+    ll c = 0;
+    loop(i, 1, n){
+        if(a[i] < md) c--;
+        else c++;
+        if(i >= k && c > 0) return {1, {1, i}};
+        if(m.count(c) && i-m[c] >= k) return {1, {m[c]+1, i}};
+        if(!m.count(c)) m[c] = i;
     }
+
+    return {0, {0, 0}};
 }
 
 void solve(){
-    int n, m, st, ds; cin >> n >> m >> st >> ds;
-    loop(i, 1, n) {
-        g[i].clear();
-        vis[i] = 0; dp[i] = 0;
+    cin >> n >> k;
+    loop(i, 1, n) cin >> a[i];
+    if(n == k){
+        multi_ordered_set os;
+        loop(i, 1, n) os.insert(a[i]);
+        ll val = *os.find_by_order(k/2);
+        cout << val << " 1 " << n; ed return;
     }
-    loop(i, 1, m){
-        int x, y; cin >> x >> y;
-        g[x].push_back(y); g[y].push_back(x);
+    if(k%2) k++;
+    ll l = 1, r = n;
+    while(r-l > 10){
+        ll md = (l+r)/2;
+        auto u = func(md);
+        if(u.first) l = md;
+        else r = md-1;
     }
 
-    vector < int > ans; ans.push_back(st);
-    dp[st] = 1;
-    while(st != ds){
-        loop(i, 1, n){
-            if(dp[i] == 0) vis[i] = 0;
-            else vis[i] = 1;
+    loop2(md, r, l){
+        auto u = func(md);
+        if(u.first){
+            cout << md << " " << u.second.first << " " << u.second.second; ed return;
         }
-
-        dfs(ds);
-        int mn = N;
-        for(int nd : g[st]){
-            if(vis[nd] && !dp[nd]) mn = min(mn, nd);
-        }
-        ans.push_back(mn); st = mn; dp[st] = 1;
     }
-
-    for(auto u : ans) cout << u << " "; ed
 }
 
 int main(){

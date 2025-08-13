@@ -2,7 +2,6 @@
 using namespace std;
  
 #define ll                      long long int
-#define lld                     long double
 //Ordered set(tree)
 #include<ext/pb_ds/assoc_container.hpp>
 #include<ext/pb_ds/tree_policy.hpp>
@@ -17,8 +16,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 //Macros
 #define FIO                     ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(NULL);
 #define TC(t)                   int t; cin >> t; for(int i = 1; i <= t; i++)
-#define ini(x, y)               memset(x, y, sizeof(x))
-#define loop(i, a, b)           for(int i = a; i <= b; i++)
+#define loop(i, a, b)           for(ll i = a; i <= b; i++)
 #define loop2(i, b, a)          for(ll i = b; i >= a; i--)
 #define pn                      cout << "NO\n";
 #define py                      cout << "YES\n";
@@ -26,14 +24,10 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define flush                   cout.flush();
 #define vrev(v)                 reverse(v.begin(),v.end());
 #define vsort(v)                sort(v.begin(),v.end());
-#define uni(v)                  v.erase(unique(v.begin(), v.end()), v.end()); // last it is like e set
-#define vlowerB(v,x)            lower_bound(v.begin(), v.end(), x); 
-#define vupperB(v,x)            upper_bound(v.begin(), v.end(), x); 
 #define bits(x)                 __builtin_popcountll(x)
-#define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 5e4 + 5;
+const ll N = 1e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -43,55 +37,68 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-void solve(int t){
-    int n, m, k; cin >> n >> m >> k;
-    string a[n];
-    loop(i, 0, n-1) cin >> a[i];
-    ll gold = 0;
-    // if(t == 55){
-    //     cout << a; ed return;
-    // }
+int mp[500005];
 
-    loop(i, 0, n-1){
-        loop(j, 0, m-1){
-            if(a[i][j] == 'g') gold++;
+void solve(){
+    int n, m, qe; cin >> n >> m >> qe;
+    vector < int > divisor; divisor.push_back(1);
+    for(int i = 2; i*i <= m; i++){
+        if(m%i == 0){
+            divisor.push_back(i);
+            if(i != m/i) divisor.push_back(m/i);
+        }
+    }
+    vsort(divisor);
+    int sz = divisor.size();
+    for(int i = 0; i < sz; i++) mp[divisor[i]] = i;
+    int dp[n+2][sz+1], cunt[sz+1] = {0};
+
+    int arr[n+1]; arr[0] = 0;
+    loop(i, 1, n) cin >> arr[i];
+
+    loop(i, 0, n){
+        int ar = arr[i];
+        for(int j = 0; j < sz; j++) dp[i][j] = ar%divisor[j];
+    }
+    for(int j = 0; j < sz; j++) dp[n+1][j] = m;
+
+    loop(i, 1, n){
+        for(int j = 0; j < sz; j++){
+            if(dp[i][j] < dp[i-1][j]) cunt[j]++;
         }
     }
 
-    int dp[n+5][m+5];
-    loop(i, 0, n-1){
-        if(a[i][0] == 'g') dp[i][0] = 1;
-        else dp[i][0] = 0;
-        loop(j, 1, m-1){
-            dp[i][j] = dp[i][j-1];
-            if(a[i][j] == 'g') dp[i][j]++;
+    while(qe--){
+        int tr; cin >> tr;
+        if(tr == 2){
+            int k; cin >> k;
+            int gd = __gcd(k, m);
+            int updown = cunt[mp[gd]];
+            if(updown < m/gd) py 
+            else pn
         }
-    }
-
-    int mn = gold;
-    loop(i, 0, n-1){
-        loop(j, 0, m-1){
-            if(a[i][j] != '.') continue;
-            int tot = 0;
-            int st = 0; st = max(st, i-k+1);
-            int en = n-1; en = min(en, i+k-1);
-            int l = 0; l = max(l, j-k+1);
-            int r = m-1; r = min(r, j+k-1);
-            //cout << st << " " << en << " " << l << " " << r; ed
-            loop(k, st, en) tot += dp[k][r];
-            if(l > 0){
-                loop(k, st, en) tot -= dp[k][l-1];
+        else{
+            int inx, k; cin >> inx >> k;
+            //if(arr[inx] == k) continue;
+            for(int j = 0; j < sz; j++){
+                int p = dp[inx-1][j], q = dp[inx][j], r = dp[inx+1][j];
+                if(p <= r && p > q) cunt[j]--;
+                if(p <= r && r < q) cunt[j]--;
+                if(p > r && (p > q && r < q)) cunt[j]--;
+                q = k%divisor[j];
+                if(p <= r && p > q) cunt[j]++;
+                if(p <= r && r < q) cunt[j]++;
+                if(p > r && (p > q && r < q)) cunt[j]++;
+                dp[inx][j] = q;
             }
-            mn = min(mn, tot);
         }
     }
 
-    cout << gold - mn; ed
 }
 
 int main(){
     FIO
     TC(t) 
-    solve(i);
+    solve();
     return 0;
 }

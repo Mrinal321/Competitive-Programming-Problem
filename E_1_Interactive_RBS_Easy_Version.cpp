@@ -22,7 +22,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define bits(x)                 __builtin_popcountll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e3 + 5;
+const ll N = 1e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -32,44 +32,55 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-vector < int > g[N];
-bool vis[N], dp[N];
-
-void dfs(int node){
-    vis[node] = 1;
-    for(int u : g[node]){
-        if(!vis[u]) dfs(u);
-    }
+int ask(vector<int> &vec) {
+    cout << "? " << vec.size() << ' ';
+    for (int x : vec) cout << x << ' ';
+    cout << endl;
+    int res;
+    cin >> res;
+    return res;
 }
-
-void solve(){
-    int n, m, st, ds; cin >> n >> m >> st >> ds;
-    loop(i, 1, n) {
-        g[i].clear();
-        vis[i] = 0; dp[i] = 0;
-    }
-    loop(i, 1, m){
-        int x, y; cin >> x >> y;
-        g[x].push_back(y); g[y].push_back(x);
-    }
-
-    vector < int > ans; ans.push_back(st);
-    dp[st] = 1;
-    while(st != ds){
-        loop(i, 1, n){
-            if(dp[i] == 0) vis[i] = 0;
-            else vis[i] = 1;
+ 
+void solve() {
+    int n;
+    cin >> n;
+ 
+    vector<int> all(n);
+    iota(all.begin(), all.end(), 1);
+ 
+    int op = -1, cl = -1;
+    if (ask(all)) {
+        int l = 1, r = n;
+        while (r - l > 1) {
+            int m = (l + r) / 2;
+            vector<int> tmp(m);
+            iota(tmp.begin(), tmp.end(), 1);
+            if (ask(tmp)) r = m;
+            else l = m;
         }
-
-        dfs(ds);
-        int mn = N;
-        for(int nd : g[st]){
-            if(vis[nd] && !dp[nd]) mn = min(mn, nd);
-        }
-        ans.push_back(mn); st = mn; dp[st] = 1;
+        op = r - 1;
+        cl = r;
+    } else {
+        cl = 1;
+        op = n;
     }
-
-    for(auto u : ans) cout << u << " "; ed
+ 
+    string s(n, '#');
+    for (int i = 0; i + 1 < n; i += 2) {
+        vector<int> q = {i + 1, cl, i + 2, cl, op, cl};
+        int f = ask(q);
+        if (f == 6) s[i] = '(', s[i + 1] = '(';
+        if (f == 2) s[i] = '(', s[i + 1] = ')';
+        if (f == 3) s[i] = ')', s[i + 1] = '(';
+        if (f == 1) s[i] = ')', s[i + 1] = ')';
+    }
+ 
+    if (s.back() == '#') {
+        vector<int> q = {op, n};
+        s.back() = ask(q) ? ')' : '(';
+    }
+ 
+    cout << "! " << s << endl;
 }
 
 int main(){

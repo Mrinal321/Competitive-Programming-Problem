@@ -22,7 +22,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define bits(x)                 __builtin_popcountll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e3 + 5;
+const ll N = 2e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -32,48 +32,98 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-vector < int > g[N];
-bool vis[N], dp[N];
+bool isBipartite(int n, const vector<vector<int>>& graph) {
+    vector<int> color(n + 1, -1);
+
+    for (int start = 1; start <= n; ++start) {
+        if (color[start] != -1) continue;
+
+        queue<int> q;
+        q.push(start);
+        color[start] = 0;
+
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            for (int v : graph[u]) {
+                if (color[v] == -1) {
+                    color[v] = color[u] ^ 1;
+                    q.push(v);
+                } else if (color[v] == color[u]) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+vector < int > g[N], vpar;
+bool vis[N], no;
+ll yes;
 
 void dfs(int node){
     vis[node] = 1;
+    int c = 0, d = 0;
     for(int u : g[node]){
-        if(!vis[u]) dfs(u);
+        if(g[u].size() == 1) {
+            c++;
+            vis[u] = 1;
+        }
+        else{
+            d++; if(!vis[u]) dfs(u);
+        }
     }
+    if(d > 2) no = 1;
+    if(d > 0) yes++;
+    if(c > 1) vpar.push_back(c);
 }
 
+ll parmutation[N+5];
+
 void solve(){
-    int n, m, st, ds; cin >> n >> m >> st >> ds;
-    loop(i, 1, n) {
-        g[i].clear();
-        vis[i] = 0; dp[i] = 0;
+    int n, m; cin >> n >> m;
+    no = 0; vpar.clear();
+    loop(i, 1, n){
+        vis[i] = 0; g[i].clear();
     }
+    vector<vector<int>> graph(n + 1);
     loop(i, 1, m){
         int x, y; cin >> x >> y;
         g[x].push_back(y); g[y].push_back(x);
+        graph[x].push_back(y); graph[y].push_back(x);
+    }
+    if(n == 2){
+        cout << "2\n"; return;
+    }
+    if(!isBipartite(n, graph) || m != n-1){
+        cout << "0\n"; return;
     }
 
-    vector < int > ans; ans.push_back(st);
-    dp[st] = 1;
-    while(st != ds){
-        loop(i, 1, n){
-            if(dp[i] == 0) vis[i] = 0;
-            else vis[i] = 1;
+    int nd = 1;
+    loop(i, 1, n){
+        if(g[i].size() == 1){
+            int nd = g[i][0]; break;
         }
-
-        dfs(ds);
-        int mn = N;
-        for(int nd : g[st]){
-            if(vis[nd] && !dp[nd]) mn = min(mn, nd);
-        }
-        ans.push_back(mn); st = mn; dp[st] = 1;
     }
 
-    for(auto u : ans) cout << u << " "; ed
+    yes = 0;
+    dfs(nd);
+    if(no){
+        cout << "0\n"; return;
+    }
+    ll ans = 1;
+    for(int x : vpar){
+        ans = (ans * parmutation[x]) % M;
+    }
+    if(yes > 1) ans = (ans * 4) % M;
+    else ans = (ans * 2) % M;
+    cout << ans; ed
 }
 
 int main(){
     FIO
+    parmutation[0] = 1;
+    loop(i, 1, N) parmutation[i] = (i * parmutation[i-1]) % M;
     TC(t) 
     solve();
     return 0;

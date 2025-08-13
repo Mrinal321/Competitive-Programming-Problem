@@ -2,7 +2,6 @@
 using namespace std;
  
 #define ll                      long long int
-#define lld                     long double
 //Ordered set(tree)
 #include<ext/pb_ds/assoc_container.hpp>
 #include<ext/pb_ds/tree_policy.hpp>
@@ -17,8 +16,7 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 //Macros
 #define FIO                     ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(NULL);
 #define TC(t)                   int t; cin >> t; for(int i = 1; i <= t; i++)
-#define ini(x, y)               memset(x, y, sizeof(x))
-#define loop(i, a, b)           for(int i = a; i <= b; i++)
+#define loop(i, a, b)           for(ll i = a; i <= b; i++)
 #define loop2(i, b, a)          for(ll i = b; i >= a; i--)
 #define pn                      cout << "NO\n";
 #define py                      cout << "YES\n";
@@ -26,14 +24,10 @@ template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree
 #define flush                   cout.flush();
 #define vrev(v)                 reverse(v.begin(),v.end());
 #define vsort(v)                sort(v.begin(),v.end());
-#define uni(v)                  v.erase(unique(v.begin(), v.end()), v.end()); // last it is like e set
-#define vlowerB(v,x)            lower_bound(v.begin(), v.end(), x); 
-#define vupperB(v,x)            upper_bound(v.begin(), v.end(), x); 
 #define bits(x)                 __builtin_popcountll(x)
-#define zrbits(x)               __builtin_ctzll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 5e4 + 5;
+const ll N = 1e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -44,49 +38,58 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
 */
 
 void solve(int t){
-    int n, m, k; cin >> n >> m >> k;
-    string a[n];
-    loop(i, 0, n-1) cin >> a[i];
-    ll gold = 0;
-    // if(t == 55){
-    //     cout << a; ed return;
-    // }
-
-    loop(i, 0, n-1){
-        loop(j, 0, m-1){
-            if(a[i][j] == 'g') gold++;
+    ll n; cin >> n;
+    ll a[n+1];
+    loop(i, 1, n) cin >> a[i];
+    ll b[n+1], c[n+1];
+    loop(i, 1, n) cin >> b[i] >> c[i];
+    ll h = 0, pow = 0;
+    ll ans[n+1]; ans[0] = 0;
+    ll pw[n+1]; pw[0] = 0;
+    loop(i, 1, n){
+        if(a[i] == -1) pow++;
+        else if(a[i] == 1) h++;
+        
+        ll x = b[i]-h;
+        if(pow < x){
+            cout << "-1\n"; return;
         }
+        if(x >= 0) {
+            pow -= x;
+            h = b[i];
+        }
+        x = c[i]-h;
+        if(x < 0){
+            cout << "-1\n"; return;
+        }
+        pow = min(pow, x);
+        ans[i] = h; pw[i] = pow;
     }
 
-    int dp[n+5][m+5];
-    loop(i, 0, n-1){
-        if(a[i][0] == 'g') dp[i][0] = 1;
-        else dp[i][0] = 0;
-        loop(j, 1, m-1){
-            dp[i][j] = dp[i][j-1];
-            if(a[i][j] == 'g') dp[i][j]++;
-        }
-    }
-
-    int mn = gold;
-    loop(i, 0, n-1){
-        loop(j, 0, m-1){
-            if(a[i][j] != '.') continue;
-            int tot = 0;
-            int st = 0; st = max(st, i-k+1);
-            int en = n-1; en = min(en, i+k-1);
-            int l = 0; l = max(l, j-k+1);
-            int r = m-1; r = min(r, j+k-1);
-            //cout << st << " " << en << " " << l << " " << r; ed
-            loop(k, st, en) tot += dp[k][r];
-            if(l > 0){
-                loop(k, st, en) tot -= dp[k][l-1];
+    ll a2[n+1]; a2[0] = 0;
+    loop(i, 1, n) a2[i] = ans[i]+pw[i];
+    ll ans2[n+1];
+    a2[n] = ans[n];
+    loop2(i, n, 1){
+        if(a2[i-1] < a2[i]) {
+            ll x = a2[i]-a2[i-1];
+            int j = i;
+            while(j <= n && x > 0){
+                if(a[j] != 0){
+                    x--; ans2[j] = 1;
+                }
+                j++;
             }
-            mn = min(mn, tot);
+            
+        }
+        else {
+            a2[i-1] = a2[i];
+            if(a[i] == -1) ans2[i] = 0;
+            else ans2[i] = a[i];
         }
     }
-
-    cout << gold - mn; ed
+    loop(i, 1, n) cout << ans2[i] << " ";
+    ed
 }
 
 int main(){

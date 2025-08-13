@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 using namespace std;
-
+ 
 #define ll                      long long int
 //Ordered set(tree)
 #include<ext/pb_ds/assoc_container.hpp>
@@ -9,20 +9,25 @@ using namespace __gnu_pbds;
 #define ordered_set             tree<ll, null_type, less<ll>, rb_tree_tag, tree_order_statistics_node_update>
 #define multi_ordered_set       tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update>
 template <typename T> using order_set = tree<T, null_type, std::less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+#define mxheap                  priority_queue<ll>
+#define mnheap                  priority_queue<ll, vector<ll>, greater<ll>>
+#define mxheap2                 priority_queue<pair<ll,ll>>
+#define mnheap2                 priority_queue<pair<ll,ll>, vector<pair<ll,ll>>, greater<pair<ll,ll>>>
 //Macros
 #define FIO                     ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(NULL);
 #define TC(t)                   int t; cin >> t; for(int i = 1; i <= t; i++)
-#define loop(i, a, b)           for(int i = a; i <= b; i++)
-#define loop2(i, b, a)          for(int i = b; i >= a; i--)
+#define loop(i, a, b)           for(ll i = a; i <= b; i++)
+#define loop2(i, b, a)          for(ll i = b; i >= a; i--)
 #define pn                      cout << "NO\n";
 #define py                      cout << "YES\n";
 #define ed                      cout << "\n";
+#define flush                   cout.flush();
 #define vrev(v)                 reverse(v.begin(),v.end());
 #define vsort(v)                sort(v.begin(),v.end());
 #define bits(x)                 __builtin_popcountll(x)
 //Constants
 const ll M = 1e9 + 7;
-const ll N = 1e3 + 5;
+const ll N = 1e5 + 5;
 ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) % M; b >>= 1; } return ans; }
 /*  Contest time:
     1. Check it is binary searce or not.
@@ -32,44 +37,18 @@ ll POW(ll a,ll b){ ll ans=1; while(b){ if(b&1) ans = (ans * a) % M; a = (a * a) 
     5. Number theory   
 */
 
-vector < int > g[N];
-bool vis[N], dp[N];
-
-void dfs(int node){
-    vis[node] = 1;
-    for(int u : g[node]){
-        if(!vis[u]) dfs(u);
-    }
-}
-
 void solve(){
-    int n, m, st, ds; cin >> n >> m >> st >> ds;
-    loop(i, 1, n) {
-        g[i].clear();
-        vis[i] = 0; dp[i] = 0;
-    }
-    loop(i, 1, m){
-        int x, y; cin >> x >> y;
-        g[x].push_back(y); g[y].push_back(x);
-    }
-
-    vector < int > ans; ans.push_back(st);
-    dp[st] = 1;
-    while(st != ds){
-        loop(i, 1, n){
-            if(dp[i] == 0) vis[i] = 0;
-            else vis[i] = 1;
+    string a; cin >> a;
+    int n = a.size();
+    stack < int > st;
+    loop(i, 0, n-1){
+        if(a[i] == ')') st.pop();
+        else st.push(1);
+        if(st.empty() && i != n-1){
+            py return;
         }
-
-        dfs(ds);
-        int mn = N;
-        for(int nd : g[st]){
-            if(vis[nd] && !dp[nd]) mn = min(mn, nd);
-        }
-        ans.push_back(mn); st = mn; dp[st] = 1;
     }
-
-    for(auto u : ans) cout << u << " "; ed
+    pn
 }
 
 int main(){
